@@ -2,6 +2,16 @@
 
 Praktické šablony pro vlastní nástroj. Portál promítá lektor; účastníci pracují v ChatGPT, Claude, Gemini, Codexu nebo n8n.
 
+## Začněte tvorbou / Start by creating
+
+**create-agent.md → brief.md → instructions.md → task.txt → tests.md**
+
+Prompt **create-agent.md** říká AI, aby s vámi agenta vytvořila. Brief je zdroj požadavků; instructions jsou pravidla pro jeho běh. V UI přiložte soubory nebo vložte jejich obsah. Název souboru není přístup na disk. Nastavení nástrojů a oprávnění ve své aplikaci ověřte zvlášť.
+
+**create-agent.md** asks AI to create the agent with you. The brief holds requirements; instructions govern execution. Attach or paste files in a UI. A filename is not filesystem access. Verify tools and permissions in your application separately.
+
+All routes use the same fictional quotation example. `cases.md` offers presentation and afternoon-planning alternatives. The SDK provides real read/check/save tools; UI and Markdown use your application's actual tools. n8n remains a fixed workflow for comparison.
+
 ## Bez terminálu / Without a terminal
 
 Klikněte **Code → Download ZIP**, rozbalte soubor a otevřete README.md v jedné cestě a jazyku. Soubory `.md` jsou obyčejný text; otevřete je v textovém editoru, ne v terminálu.

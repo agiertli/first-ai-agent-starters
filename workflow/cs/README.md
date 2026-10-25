@@ -1,7 +1,14 @@
 # Pevný postup s AI: n8n
 
+## Začněte zde: vytvoření → nastavení → běh → test
+
+1. Upravte brief.md (obsahuje vyplněný fiktivní příklad), nebo použijte brief-template.md.
+2. Vložte prompt z create-agent.md do svého nástroje. Přiložte brief.md, instructions.md a materials.md; bez příloh vložte jejich obsah. Samotný odkaz na soubor nestačí.
+3. AI připraví nebo upraví agenta. Zkontrolujte výsledek, nastavte skutečné nástroje a oprávnění. Vytvořený text sám agenta nenainstaluje.
+4. Pro první běh použijte task.txt, poté tests.md. Uložte skutečný výstup.
+
 1. V existující instanci n8n importujte workflow.json.
-2. V uzlu Inputs upravte api_base (bez koncového lomítka), model, materials a task.
+2. V uzlu Inputs upravte api_base (bez koncového lomítka), model, brief, materials a task.
 3. V uzlu Model vyberte Generic Credential Type → Header Auth. Vytvořte credential s názvem hlavičky Authorization a hodnotou Bearer + vlastní API klíč. Klíč nedávejte do JSON.
 4. Ručně spusťte workflow. Uzel Draft for human review obsahuje návrh, který zkontrolujete vy.
 5. Proveďte tests.md. Šablona nic nepublikuje a nemá automatický spouštěč.

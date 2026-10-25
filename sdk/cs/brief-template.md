@@ -1,0 +1,19 @@
+# Brief
+
+## Jméno
+…
+
+## Komu pomáhá a s čím
+…
+
+## Vstupy a nástroje
+…
+
+## Výstup
+…
+
+## Samostatnost a hranice
+…
+
+## Ověřitelný úspěch
+…

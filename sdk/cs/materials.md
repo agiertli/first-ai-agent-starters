@@ -1,3 +1,1 @@
-# Ukázková data (fiktivní)
-
-Kavárna Lípa. Cappuccino 75 Kč, čaj 55 Kč, jablečný koláč 65 Kč. Otevřeno Po–Pá 8–17. Žádná sleva není schválena. Tón: přátelský, stručný, bez superlativů.
+Fiktivní poptávka: 12 dárkových sad od jediného dodavatele, rozpočet 4 200 Kč včetně dopravy, doručení do pátku 30. 10. 2026. Alfa: 300 Kč/kus, skladem 6 ks, doprava 250 Kč, dodání 29. 10. Beta: 340 Kč/kus, skladem 20 ks, doprava 0 Kč, dodání 30. 10. Gama: 250 Kč/kus, skladem 30 ks, doprava 0 Kč, dodání 2. 11. Nabídku nesmíš odeslat ani objednat.

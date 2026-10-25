@@ -1,5 +1,12 @@
 # Markdown: Codex / Claude Code
 
+## Začněte zde: vytvoření → nastavení → běh → test
+
+1. Upravte brief.md (obsahuje vyplněný fiktivní příklad), nebo použijte brief-template.md.
+2. Vložte prompt z create-agent.md do svého nástroje. Přiložte brief.md, instructions.md a materials.md; bez příloh vložte jejich obsah. Samotný odkaz na soubor nestačí.
+3. AI připraví nebo upraví agenta. Zkontrolujte výsledek, nastavte skutečné nástroje a oprávnění. Vytvořený text sám agenta nenainstaluje.
+4. Pro první běh použijte task.txt, poté tests.md. Uložte skutečný výstup.
+
 1. Použijte tuto složku jako samostatný projekt. Potřebujete nainstalovaný a přihlášený Codex nebo Claude Code.
 2. Codex načítá AGENTS.md, Claude Code CLAUDE.md. Instrukce vás odkazují na brief.md a materials.md; upravte je.
 3. Otevřete složku v aplikaci a zadejte obsah task.txt. Požádejte o potvrzení, které instrukce byly načteny.
