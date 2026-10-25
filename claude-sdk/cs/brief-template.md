@@ -1,3 +1,5 @@
+Nemusíte vyplňovat formulář. Klidně volně pište nebo nadiktujte své myšlenky. Otázky níže jsou jen vodítko. Přepis zkontrolujte a nechte AI myšlenky uspořádat.
+
 Co mě zdržuje nebo co potřebuji zlepšit:
 [doplňte]
 

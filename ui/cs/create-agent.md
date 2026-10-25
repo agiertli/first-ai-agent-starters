@@ -6,7 +6,7 @@ Začni brief.md, který přikládám nebo vkládám níže. Je to hlavní zdroj 
 2. Ověř, v jaké aplikaci pracuji a které nástroje v ní skutečně mohu používat. Porovnej stručně běžný chat, pevný workflow a agenta. Doporuč nejjednodušší vhodnou možnost.
 3. Pokud je vhodný agent, navrhni malý rozsah: cíl, vstupy, samostatná rozhodnutí podle výsledků nástrojů, výstup, hranice, podmínky zastavení a tři testy. Brief podle mého upřesnění aktualizuj.
 4. Připrav pro tuto aplikaci použitelné instrukce a potřebné soubory nebo skill. Vycházej z přiloženého instructions.md, pokud je dostupný. Nemusím psát kód; pokud jsou potřeba skripty, vytvoř je ty, stručně vysvětli jejich účel a ověř je dostupnými nástroji.
-5. Odděl, co jsi skutečně vytvořil, od toho, co musím v aplikaci nastavit já. Nedostupné nástroje nebo instalaci nepředstírej. Použij jen veřejná nebo smyšlená data a nejmenší potřebná oprávnění. Nic neposílej, nepublikuj, nemaž ani nenakupuj.
+5. Odděl, co jsi skutečně vytvořil, od toho, co musím v aplikaci nastavit já. Nedostupné nástroje nebo instalaci nepředstírej. Použij podklady, které smím zpracovat v této službě, a nejmenší potřebná oprávnění. Při nejistotě navrhni anonymizaci. Hesla a API klíče patří do nastavení připojení, ne do promptu. Nic neposílej, nepublikuj, nemaž ani nenakupuj.
 6. Proveď se mnou první skutečný běh: nech agenta zvolit potřebné kroky, zkontrolovat výsledek a podle zjištění postup upravit. Potom otestuj běžný úkol, změněné podmínky a nepovolený pokyn v podkladech. Neuváděj neprovedený test jako úspěšný.
 
 Chci si odnést uložený brief, instrukce nebo skill, jeden skutečný použitelný výstup a záznam testů s omezeními. Začni otázkami, které ještě potřebuješ zodpovědět.

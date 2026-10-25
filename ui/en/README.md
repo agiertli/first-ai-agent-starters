@@ -2,7 +2,7 @@
 
 ## Start here: create → configure → run → test
 
-1. For your own idea, fill in problem.md: what, why, for whom and in what situation. Paste it with discuss-problem.md into your chat. Explore solutions with AI, then complete and agree brief.md. The supplied brief.md is a completed example, not an initial questionnaire.
+1. For your own idea, use problem.md as a guide; write or dictate freely: what, why, for whom and in what situation. Paste it with discuss-problem.md into your chat. Explore solutions with AI, then complete and agree brief.md. The supplied brief.md is a completed example, not an initial questionnaire.
 2. Paste create-agent.md into your tool. Attach brief.md, instructions.md and materials.md, or paste their contents. A filename alone does not provide access.
 3. AI prepares or adapts the agent. Review the result and configure actual tools and permissions. Generated text does not install an agent.
 4. For the first run use task.txt, then tests.md. Save the actual output.

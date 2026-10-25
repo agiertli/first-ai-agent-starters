@@ -1,3 +1,5 @@
+You do not need to fill in a form. Write or dictate freely. The questions below are just prompts. Check the transcript and let AI organise your thoughts.
+
 What slows me down or needs improving:
 [fill in]
 

@@ -2,7 +2,7 @@
 
 ## Začněte zde: vytvoření → nastavení → běh → test
 
-1. Pro vlastní nápad vyplňte problem.md: co řešíte, proč, pro koho a v jaké situaci. Vložte jej spolu s discuss-problem.md do svého chatu. AI pomůže navrhnout řešení; teprve potom společně doplňte a potvrďte brief.md. Předvyplněný brief.md je ukázka hotového zadání, ne vstupní dotazník.
+1. Pro vlastní nápad použijte problem.md jako vodítko; můžete volně psát nebo diktovat: co řešíte, proč, pro koho a v jaké situaci. Vložte jej spolu s discuss-problem.md do svého chatu. AI pomůže navrhnout řešení; teprve potom společně doplňte a potvrďte brief.md. Předvyplněný brief.md je ukázka hotového zadání, ne vstupní dotazník.
 2. Vložte prompt z create-agent.md do svého nástroje. Přiložte brief.md, instructions.md a materials.md; bez příloh vložte jejich obsah. Samotný odkaz na soubor nestačí.
 3. AI připraví nebo upraví agenta. Zkontrolujte výsledek, nastavte skutečné nástroje a oprávnění. Vytvořený text sám agenta nenainstaluje.
 4. Pro první běh použijte task.txt, poté tests.md. Uložte skutečný výstup.
