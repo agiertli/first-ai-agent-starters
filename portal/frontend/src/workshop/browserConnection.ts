@@ -17,9 +17,15 @@ export function getBrowserConnection(): BrowserConnection | null {
   if (cached !== undefined) return cached;
   cached = null;
   try {
-    const value = JSON.parse(sessionStorage.getItem(CONNECTION_KEY) || 'null');
+    const stored = localStorage.getItem(CONNECTION_KEY);
+    // An explicit null means Forget was used. Never revive an old session key.
+    const value = JSON.parse(stored ?? sessionStorage.getItem(CONNECTION_KEY) ?? 'null');
     if (value) cached = validateConnection(value, location.protocol);
-  } catch { /* Storage is optional. Never recover a key from the old backend configuration. */ }
+    if (stored === null && cached) {
+      try { localStorage.setItem(CONNECTION_KEY, JSON.stringify(cached)); } catch { /* Memory only. */ }
+    }
+  } catch { /* Storage is optional. Never use the original backend configuration. */ }
+  try { sessionStorage.removeItem(CONNECTION_KEY); } catch { /* Legacy storage unavailable. */ }
   return cached;
 }
 
@@ -27,16 +33,30 @@ export function getBrowserConnection(): BrowserConnection | null {
 export function saveBrowserConnection(input: BrowserConnection): boolean {
   cached = validateConnection(input, location.protocol);
   let persisted = false;
-  try { sessionStorage.setItem(CONNECTION_KEY, JSON.stringify(cached)); persisted = true; } catch { /* Memory only. */ }
+  try { localStorage.setItem(CONNECTION_KEY, JSON.stringify(cached)); persisted = true; } catch { /* Memory only. */ }
+  try { sessionStorage.removeItem(CONNECTION_KEY); } catch { /* Legacy storage unavailable. */ }
   window.dispatchEvent(new Event(CHANGE));
   return persisted;
 }
 export function clearBrowserConnection() {
   cached = null;
-  try { sessionStorage.removeItem(CONNECTION_KEY); } catch { /* Storage unavailable. */ }
+  let cleared = true;
+  // Keep only a non-secret marker so old tabs cannot migrate a forgotten key back.
+  try { localStorage.setItem(CONNECTION_KEY, 'null'); } catch {
+    try { localStorage.removeItem(CONNECTION_KEY); } catch { cleared = false; }
+  }
+  try { sessionStorage.removeItem(CONNECTION_KEY); } catch { cleared = false; }
   window.dispatchEvent(new Event(CHANGE));
+  return cleared;
 }
 export function subscribeConnection(listener: () => void) {
+  const onStorage = (event: StorageEvent) => {
+    if (event.key !== CONNECTION_KEY && event.key !== null) return;
+    try { if (event.storageArea !== localStorage) return; } catch { return; }
+    cached = undefined;
+    listener();
+  };
   window.addEventListener(CHANGE, listener);
-  return () => window.removeEventListener(CHANGE, listener);
+  window.addEventListener('storage', onStorage);
+  return () => { window.removeEventListener(CHANGE, listener); window.removeEventListener('storage', onStorage); };
 }

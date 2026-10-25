@@ -1,12 +1,12 @@
 {
-  "built_at": "2026-10-25T11:09:46.181Z",
+  "built_at": "2026-10-25T20:08:51.905Z",
   "runtime": "browser-only",
   "files": {
-    "assets/index-BUaUrtBv.js": "5b8f67634c94adf32b1dea10ef4589e64f9443a9d430b8f03e049c2c8b488c12",
     "assets/index-DfqDUOEj.css": "baacbecd852ee3f860fc7ec788077e22636d8e2310b6b58fcfaade8349591816",
+    "assets/index-Dwxaay2W.js": "bfcae221ad51b587d518e2aadb646d0d2b4c966866f7e0ff9d66a41d4b760408",
     "favicon.svg": "61bc9a161de58248288e6905425d7180f0624c2865007b97d763fdac12043a66",
     "icons.svg": "b45fa506195cfcdef406ba9f0c77b36ddc1a7c224040926ec70abc2fdea7b93a",
-    "index.html": "d40b8d6c848ae9c22090b198ceac497f83e9c7733bdbd6763beab6f208a2c237",
+    "index.html": "52456e7396a796fe6e43b3c33ec9577291dbdb5faac60ba37e922d22cc1c1798",
     "presentation-demo/first-agent-cs.html": "316cba9787ccdf17ab9ca16fb69edc0d9dff5354a9503807532a23b0bac9e58c",
     "presentation-demo/first-agent-en.html": "4d45d4be4e054258ec0b178ff62a18657df607dc65e0b790dbfad49fabefebcc",
     "runbook/facilitator-cs.pdf": "e0fc9dac2b748bf9f1c8149e1924c8bd4cc39c4be4751215c39ff4624fd4dd0d",

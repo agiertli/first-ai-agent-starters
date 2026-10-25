@@ -62,11 +62,17 @@ builds. Edit those root folders rather than the generated catalog or ZIP files.
 ## Model connection and boundaries
 
 Readers need no API key. A presenter enters their own HTTPS API base, model name
-and key in **Notes and controls → Model connection**. The key is held in tab
-`sessionStorage`, sent directly to that model endpoint, and never published in
-the repository or sent to GitHub. Browser scripts can access it; use a dedicated
-demo key and **Forget connection** after presenting. Refresh preserves the key;
-session restoration and tab duplication may also retain it.
+and key in **Notes and controls → Model connection**. **Save connection** remembers
+all three in `localStorage` by default, including after closing and reopening the
+browser in the same profile. Private browsing or clearing site data can remove
+them; they do not sync across browsers or devices. The key is sent directly to
+the model endpoint, never published in the repository or sent to GitHub.
+Same-origin scripts can read this plaintext storage; use a dedicated demo key.
+**Forget connection** removes the credentials, also updating other open tabs.
+It leaves only a non-secret null marker so an old restored session cannot revive
+a forgotten key. Existing session-only connections migrate automatically.
+If storage is unavailable, the UI reports memory-only use rather than promising
+that the connection will survive a reload.
 
 The browser runs the agent loop and only two allowlisted read tools:
 `read_materials` and optional `get_weather`. Open-Meteo receives no model key.
