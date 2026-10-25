@@ -1,4 +1,4 @@
-# Sample brief — adapt to your own need
+# Completed example brief — agreed after exploring the problem
 
 ## Name
 Quotation preparation

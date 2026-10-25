@@ -38,31 +38,43 @@ Do not edit minified files in `docs/assets/` by hand.
 
 ## Presenting and participant materials
 
-In a live example, select **Promítat ukázku / Present demo** to show the animated
-diagram, highlighted event and real model answer together. Previous/next and
-the event selector control the recorded trace. Pausing playback does not stop
-execution; **Stop** does. Replay makes no API calls. **Esc** returns to the lesson.
-The answer panel scrolls independently when the response is long. On small
-screens the panels stack rather than shrinking their text to fit.
+The two top-level areas are **Presentation** and **Exercises**. Presentation has
+20 concise slides covering the nine timed sections (180 minutes). Arrow keys
+and previous/next buttons move between slides; Programme jumps to a section.
+The default language is Czech, with English available from the header.
 
-The agenda protects 40 minutes for building and 30 for testing, in participants'
-own tools. Work blocks have a visible timer. The no-code pack includes
-`start-here.txt` for a complete first example and `test-record.md` for recording
-expectations, actual results and retests. The other packs retain their own setup
-requirements; changing the case description does not change an SDK's tools.
+Exercises is a directly shareable page:
+https://agiertli.github.io/first-ai-agent-starters/#/workshop?view=exercises
+It provides copy-ready problem questions, discovery and creation prompts, a test
+record and a save checklist. Examples appear here, not in the opening. There is
+no need to download files or visit GitHub for the basic path. SDK, Markdown and
+workflow downloads remain available under Templates. The QR under Facilitator
+opens the public exercise page; no external tracking or shortener is used.
 
-Use **Notes and controls** for chapter guidance and the one-page Czech/English
-facilitator manual. Notes and model settings are visible on the projector.
-The public `frontend/public/runbook/` PDFs must be updated when the shared
-`workshop-content/runbook.json` timing or guidance changes. Downloaded assets and
-the file previews in `frontend/src/workshop/starterCatalog.json` are regenerated
-from the root starter folders by `package_starters.py` before development and
-builds. Edit those root folders rather than the generated catalog or ZIP files.
+The weather demonstration opens over the current slide. Starting a run hides
+setup controls to keep the diagram, highlighted event and actual answer visible
+together. “Set up the next attempt” reveals the scenario and input again.
+Stepping and pause control the recorded trace, not execution; replay makes no
+API calls. Esc closes the demo. The result remains available when reopened.
+On narrow screens content stacks and scrolls rather than shrinking to unreadable text.
+
+The agenda protects 40 minutes of building and 30 of testing in participants'
+own apps. The brief starts with the problem, reason, people and context. AI helps
+agree outputs, tools and success checks only after a solution is chosen. Timers
+continue while switching to Exercises, but reset when leaving their slide.
+
+**Facilitator** contains slide notes and the one-page Czech/English guide.
+Notes and connection settings are also visible on the projector.
+The public PDFs must be regenerated when `workshop-content/runbook.json` changes.
+`presentationContent.ts` holds the slide sequence and notes; `SlideContent.tsx`
+renders the visuals; `workshop-content/practice-prompts.json` is the source for
+copyable exercises. Generated ZIPs and `starterCatalog.json` come from the root
+starter folders via `package_starters.py`; edit those folders, not ZIPs.
 
 ## Model connection and boundaries
 
 Readers need no API key. A presenter enters their own HTTPS API base, model name
-and key in **Notes and controls → Model connection**. **Save connection** remembers
+and key in **Facilitator → Model connection**. **Save connection** remembers
 all three in `localStorage` by default, including after closing and reopening the
 browser in the same profile. Private browsing or clearing site data can remove
 them; they do not sync across browsers or devices. The key is sent directly to

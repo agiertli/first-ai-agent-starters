@@ -1,4 +1,4 @@
-# Ukázkový brief — upravte pro vlastní potřebu
+# Vyplněný příklad zadání — vzniká až po vyjasnění problému
 
 ## Jméno
 Příprava nabídky

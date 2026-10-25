@@ -1,19 +1,14 @@
-# Brief
+Co mě zdržuje nebo co potřebuji zlepšit:
+[doplňte]
 
-## Jméno
-…
+Proč to chci řešit a jak to dělám dnes:
+[doplňte]
 
-## Komu pomáhá a s čím
-…
+Komu má řešení pomáhat:
+[mně / zákazníkům / komunitě / kolegům…]
 
-## Vstupy a nástroje
-…
+V jakém prostředí a situaci problém vzniká:
+[osobní život / podnikání / služba / organizace…]
 
-## Výstup
-…
-
-## Samostatnost a hranice
-…
-
-## Ověřitelný úspěch
-…
+Co chci dál rozhodovat osobně:
+[doplňte; když nevím, proberu to s AI]

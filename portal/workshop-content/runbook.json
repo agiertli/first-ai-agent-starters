@@ -2,13 +2,13 @@
   "cs": {
     "title": "Můj první AI agent",
     "sub": "LEKTORSKÝ TAHÁK  /  2 LEKTOŘI  /  180 MINUT",
-    "roles": "A vede příběh a promítá. B zapisuje očekávání, hlídá čas a pomáhá s přístupy. Při stavbě oba konzultují. Portál ovládá lektor; účastníci tvoří přímo ve vlastní aplikaci.",
-    "pre": "Předem: ověřit účty/nástroje, projektor, Qwen + počasí a prezentační skill. V Pages zadat vlastní klíč; po ukázce Zapomenout. Plugin lze nechat nenainstalovaný pro demo. Stáhnout ZIP, A4 a označené záložní HTML; připravit tabuli.",
+    "roles": "Anton vede ukázky. Ondra zapisuje očekávání a pomáhá s přístupy. Při vlastní práci konzultují oba. Prezentace je pro promítání; Cvičení obsahují kopírovatelná zadání pro práci ve vlastních aplikacích.",
+    "pre": "Předem: ověřit účty, nástroje, projektor, Qwen a počasí. Lektor → Připojení modelu: uložené údaje si tento prohlížeč pamatuje. Připravit původní prompt, plugin a záložní HTML. Plugin lze nechat nenainstalovaný pro demo. Otevřít QR pro účastníky.",
     "rows": [
       [
         "00–15",
-        "Potřeby skupiny",
-        "Jméno, osa zkušeností, jedna potřeba. B zapisuje očekávání."
+        "Úvod a očekávání",
+        "Jméno, dosavadní práce s AI, jedno očekávání. Ondra zapisuje."
       ],
       [
         "15–30",
@@ -22,8 +22,8 @@
       ],
       [
         "45–65",
-        "Jedna stránka zadání",
-        "5 min problém, 10 min vlastní brief, 5 min zúžení s lektory."
+        "Jaký problém řešíte",
+        "Co, proč, pro koho a v jaké situaci. Pak návrh řešení s AI."
       ],
       [
         "65–75",
@@ -32,8 +32,8 @@
       ],
       [
         "75–95",
-        "Data, bezpečnost, skill",
-        "5 min bezpečnost; 10 min vznik a použití; 5 min pojmy a cesty."
+        "Bezpečnost a tvorba",
+        "5 min bezpečnost, 3 pojmy, 5 tvorba, 2 výsledek, 5 volba cesty."
       ],
       [
         "95–135",
@@ -53,33 +53,33 @@
     ],
     "blocks": [
       [
-        "PŘÍBĚH A ŽIVÉ UKÁZKY",
-        "Potřeba → brief → návrh → běh → test → použití. Agent vybírá další krok podle výsledku; aplikace drží kontext, provádí nástroje a hlídá konec. „Nevím“ bez dat je správně. U počasí sledujte zdroj a čas; jde o odhad Open-Meteo. U prezentace začněte původním promptem: kód vytvořila AI. Pak instalace, čtyři otázky briefu, soubor, kontrola a oprava. Záložní HTML označit jako připravenou ukázku."
+        "VÝKLAD A UKÁZKY",
+        "Jedna myšlenka na snímek; detaily v Lektor → Poznámky. Chat / workflow / agent: kdo určuje další krok? Dům začíná od základů. Diagram ukazuje skutečné role modelu, aplikace a nástrojů; výsledek vede k dalšímu volání. Rozhodovací strom pomůže nevnucovat agenta. U počasí zdroj, místo a čas. U prezentace začněte lidským promptem: kód připravila AI. Ukázka má karty prompt / instalace / výsledek / soubory."
       ],
       [
         "ZADÁNÍ A 70 MINUT PRÁCE",
-        "Brief: pro koho, problém, cíl, vstupy, výstup, samostatná rozhodnutí, hranice a ověřitelný úspěch. Stačí chat či workflow? Agenta nevnucovat. Bez kódu: start-here.txt vložit do chatu. Vlastní nápad: create-agent.md + brief.md + instructions.md + podklady. 10 min: zadání/nástroje; 25 min: výstup; 40 min: verze k testu. Testovat v čistém běhu; test-record.md: očekávání → skutečnost → oprava → opakování."
+        "Nejdřív problém, důvod, lidé a kontext. Člověk řekne, co chce rozhodovat sám. Výstup, nástroje a ověření doplní s AI až po výběru řešení. Cvičení → Popis problému → Návrh a tvorba → Testování. Není třeba GitHub ani ZIP. Nápady jsou ve Cvičeních, ne v úvodu. 10 min dohodnuté řešení; 25 min skutečný běh; 40 min výstup. Před testem očekávání, potom skutečnost, oprava a opakování."
       ],
       [
         "BEZPEČNOST A ZÁSEKY",
         "Veřejná či smyšlená data. Lokální soubor může odejít vzdálenému modelu. Trénování, uchovávání a přenos konektorem ověřovat zvlášť. Práva vynucuje aplikace; cizí pokyn v podkladech je nesmí rozšířit. Čtení / tvorba návrhu / odeslání jsou různá oprávnění. Bez účtu: dvojice. Výpadek: projít schéma nebo označenou ukázku, nevyrábět falešný běh. Při skluzu zkrátit výklad. SDK/API a n8n jen pro už připravené zájemce; kredit API není předplatné chatu."
       ],
       [
-        "OVLÁDÁNÍ A CO SI ODNÉST",
-        "„Promítat ukázku“: diagram, zvýrazněný krok a skutečná odpověď současně. Krokování a pauza řídí zobrazení, ne běh; replay nevolá API. Esc vrátí lekci. Pracovní bloky mají viditelný časovač. Poznámky i nastavení jsou vidět na projektoru! CZ/EN v záhlaví. Úspěch: uložený brief + instrukce/skill + výstup + 3 testy + omezení. Závěr: kdo volí krok, kdo ho provádí a kde jsou hranice? Práci účastníků portál nesbírá."
+        "OVLÁDÁNÍ A ZÁVĚR",
+        "Prezentace / Cvičení jsou dvě hlavní části. Šipky přepínají snímky, Program vybírá kapitolu. Ukázka se otevře nad snímkem; Esc ji zavře. Po spuštění počasí vidíte diagram, krok i odpověď současně. Pauza řídí zobrazení, ne běh. Časovač pokračuje při přepnutí do Cvičení, ne při změně snímku. QR je v Lektor → Odkaz a QR. Poznámky jsou vidět na projektoru! Uložit zadání, instrukce, výstup, testy a omezení ve vlastní aplikaci."
       ]
     ]
   },
   "en": {
     "title": "My first AI agent",
     "sub": "FACILITATOR FIELD GUIDE  /  2 FACILITATORS  /  180 MINUTES",
-    "roles": "A leads the story and projection. B records expectations, keeps time and helps with access. Both consult during building. The facilitator controls the portal; participants create directly in their own application.",
-    "pre": "Beforehand: check accounts/tools, projector, Qwen + weather and presentation skill. In Pages enter your key; Forget after the demo. Leave the plugin uninstalled for the demo if desired. Download ZIP, A4 and labelled fallback HTML; prepare a whiteboard.",
+    "roles": "Anton leads demonstrations. Ondra records expectations and helps with access. Both consult during independent work. Presentation is for projection; Exercises contains copy-ready prompts for participants’ own apps.",
+    "pre": "Beforehand: check accounts, tools, projector, Qwen and weather. Facilitator → Model connection: this browser remembers saved details. Prepare the original prompt, plugin and fallback HTML. Leave the plugin uninstalled for the demo if desired. Open the participant QR.",
     "rows": [
       [
         "00–15",
-        "People and needs",
-        "Names, experience scale, one need. B records expectations."
+        "Welcome and expectations",
+        "Name, experience with AI, one expectation. Ondra records."
       ],
       [
         "15–30",
@@ -93,8 +93,8 @@
       ],
       [
         "45–65",
-        "A one-page brief",
-        "5 min problem, 10 min own brief, 5 min narrow with facilitators."
+        "Define the problem",
+        "What, why, for whom and where. Then explore solutions with AI."
       ],
       [
         "65–75",
@@ -103,8 +103,8 @@
       ],
       [
         "75–95",
-        "Data, safety, skill",
-        "5 min safety; 10 min creation/use; 5 min terms and routes."
+        "Safety and creation",
+        "5 min safety, 3 terms, 5 creation, 2 result, 5 choosing a route."
       ],
       [
         "95–135",
@@ -124,20 +124,20 @@
     ],
     "blocks": [
       [
-        "STORY AND LIVE DEMOS",
-        "Need → brief → design → run → test → use. The agent chooses its next step from results; the app holds context, executes tools and enforces stopping. Without evidence, “I don’t know” is correct. Show weather source and time; Open-Meteo is an estimate. Start the presentation with the original prompt: AI wrote the code. Then installation, four brief questions, file, validation and repair. Label fallback HTML as prepared."
+        "EXPLANATION AND DEMOS",
+        "One idea per slide; details under Facilitator → Notes. Chat / workflow / agent: who chooses the next step? Build the house from its foundations. The diagram separates model, app and tools; results lead to another call. Use the decision tree rather than forcing an agent. Check weather source, location and time. Start the presentation demo with the human prompt: AI wrote the code. Tabs: prompt / installation / result / files."
       ],
       [
         "BRIEF AND 70 MINUTES OF PRACTICE",
-        "Brief: user, problem, goal, inputs, output, independent decisions, boundaries and testable success. Would chat or workflow suffice? Do not force an agent. No code: paste start-here.txt in a chat. Own idea: create-agent.md + brief.md + instructions.md + sources. 10 min: brief/tools; 25 min: output; 40 min: ready to test. Test in a fresh run; test-record.md: expectation → actual result → fix → retest."
+        "Start with the problem, reason, people and context. The person names decisions to retain. Agree outputs, tools and checks with AI after choosing a solution. Exercises → Describe the problem → Design and build → Test. No GitHub or ZIP needed. Example ideas are in Exercises, not the opening. 10 min agreed solution; 25 min real run; 40 min output. Before each test write expectations, then record results, fix and retest."
       ],
       [
         "SAFETY AND GOTCHAS",
         "Public or fictional data. A local file can go to a remote model. Check training, retention and connector transfers separately. The app enforces permissions; source instructions cannot expand them. Reading / drafting / sending are distinct permissions. No account: pair up. Outage: walk the diagram or labelled sample; never fake execution. If late, shorten explanation. SDK/API and n8n are for people already set up; API credit is not a chat subscription."
       ],
       [
-        "CONTROLS AND TAKEAWAY",
-        "“Present demo”: diagram, highlighted step and actual answer together. Stepping and pause control display, not execution; replay makes no API calls. Esc returns to the lesson. Work blocks have a visible timer. Notes and settings are visible on the projector! CZ/EN in the header. Success: saved brief + instructions/skill + output + 3 tests + limits. Ask: who chooses steps, who executes and where are the boundaries? The portal does not collect participant work."
+        "CONTROLS AND CLOSING",
+        "Presentation / Exercises are the two main areas. Arrows change slides; Programme selects a section. Demos open over the slide; Esc closes them. Starting the weather demo shows diagram, step and answer together. Pause controls display, not execution. Timers continue when opening Exercises, not after changing slides. QR: Facilitator → Participant link. Notes are visible on the projector! Save the brief, instructions, output, tests and limits in your own app."
       ]
     ]
   }

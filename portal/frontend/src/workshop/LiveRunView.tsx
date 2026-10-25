@@ -23,7 +23,7 @@ function eventLabel(e: TraceEvent, lang: Language) {
 }
 
 /** A compact live layout; the detailed teaching diagram remains in chapter two. */
-function RunDiagram({ lang, phase, tool, chat }: { lang: Language; phase: Phase; tool?: string; chat: boolean }) {
+export function RunDiagram({ lang, phase, tool, chat }: { lang: Language; phase: Phase; tool?: string; chat: boolean }) {
   const marker = useId().replace(/:/g, '');
   const reduced = useReducedMotion();
   const t = (cs: string, en: string) => lang === 'cs' ? cs : en;
@@ -55,8 +55,8 @@ function RunDiagram({ lang, phase, tool, chat }: { lang: Language; phase: Phase;
   </svg>;
 }
 
-export function LiveRunView({ events, lang, chat, task, runId, running, runControl }: {
-  events: TraceEvent[]; lang: Language; chat: boolean; task: string; runId: number; running: boolean; runControl: ReactNode;
+export function LiveRunView({ events, lang, chat, task, runId, running, runControl, stage = false }: {
+  events: TraceEvent[]; lang: Language; chat: boolean; task: string; runId: number; running: boolean; runControl: ReactNode; stage?: boolean;
 }) {
   const [playback, dispatch] = useReducer(playbackReducer, initialPlayback);
   const [presenting, setPresenting] = useState(false);
@@ -88,12 +88,12 @@ export function LiveRunView({ events, lang, chat, task, runId, running, runContr
   const board = <div className="ws-run-board">
     <header className="ws-live-top">
       <div><span className={`ws-status-dot ${running ? 'running' : ''}`} /><span id={titleId}>{t('Skutečný model', 'Real model')}</span><small>{t('žádné předpřipravené odpovědi', 'no scripted answers')}</small></div>
-      <div className="ws-run-actions">{runControl}<button ref={presenting ? undefined : presentButton} onClick={() => setPresenting(!presenting)}>{presenting ? t('Zpět do lekce', 'Back to lesson') : t('Promítat ukázku', 'Present demo')}</button></div>
+      <div className="ws-run-actions">{runControl}{!stage && <button ref={presenting ? undefined : presentButton} onClick={() => setPresenting(!presenting)}>{presenting ? t('Zpět do lekce', 'Back to lesson') : t('Promítat ukázku', 'Present demo')}</button>}</div>
     </header>
     <p className="ws-run-task" title={task}>{task}</p>
     <div className="ws-run-grid">
       <div className="ws-run-process">
-        <section className="ws-run-diagram" aria-label={t('Diagram běhu', 'Execution diagram')}><h3>{t('Aplikace drží smyčku pohromadě', 'The application holds the loop together')}</h3><RunDiagram lang={lang} phase={phase} tool={tool} chat={chat} /></section>
+        <section className="ws-run-diagram" aria-label={t('Diagram běhu', 'Execution diagram')}><h3>{t('Průběh práce agenta', 'Agent execution')}</h3><RunDiagram lang={lang} phase={phase} tool={tool} chat={chat} /></section>
         <section className="ws-run-step" aria-label={t('Co se opravdu děje', 'What actually happens')}>
           <div className="ws-run-step-heading"><h3>{t('Co se opravdu děje', 'What actually happens')}</h3><span>{count ? `${index + 1} / ${count}` : t('Před spuštěním', 'Before running')}</span></div>
           <div className="ws-run-step-content" aria-live="polite"><strong className="ws-run-highlight">{event ? eventLabel(event, lang) : chat ? t('Cíl → model → odpověď', 'Goal → model → answer') : t('Cíl → model → nástroj → další rozhodnutí', 'Goal → model → tool → next decision')}</strong><p>{captions[phase][lang].replace(/^\d+ · /, '')}</p>

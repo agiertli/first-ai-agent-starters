@@ -4,11 +4,11 @@ Praktické šablony pro ChatGPT, Claude, Gemini, Codex nebo n8n.
 
 **[Otevřít workshop / Open workshop](https://agiertli.github.io/first-ai-agent-starters/)** — český i anglický obsah, diagramy, ukázky a jednotlivé ZIP šablony. Pro čtení a stahování nepotřebujete účet ani API klíč.
 
-Live model demos use your own OpenAI-compatible endpoint and key entered in the browser. **Save connection** remembers the URL, model and key in browser localStorage by default, including after reopening the browser in the same profile. The key is sent directly to your endpoint; GitHub Pages has no shared model credential or portal backend. Use **Notes and controls → Model connection** and **Forget connection** to remove saved credentials. Storage is plaintext, readable by same-origin scripts, and does not sync across browsers or devices. Private browsing or clearing site data can remove it. Model endpoints must support HTTPS and browser CORS. The static site is published from `docs/`. Editable React/TypeScript sources and build/publish instructions are in **[portal/](portal/README.md)**.
+Live model demos use your own OpenAI-compatible endpoint and key entered in the browser. **Save connection** remembers the URL, model and key in browser localStorage by default, including after reopening the browser in the same profile. The key is sent directly to your endpoint; GitHub Pages has no shared model credential or portal backend. Use **Facilitator → Model connection** and **Forget connection** to remove saved credentials. Storage is plaintext, readable by same-origin scripts, and does not sync across browsers or devices. Private browsing or clearing site data can remove it. Model endpoints must support HTTPS and browser CORS. The static site is published from `docs/`. Editable React/TypeScript sources and build/publish instructions are in **[portal/](portal/README.md)**.
 
 ## Začněte tvorbou / Start by creating
 
-**create-agent.md → brief.md → instructions.md → task.txt → tests.md**
+**problem.md + discuss-problem.md → agreed brief.md → create-agent.md → instructions.md → task.txt → tests.md**
 
 Prompt **create-agent.md** říká AI, aby s vámi agenta vytvořila. Brief je zdroj požadavků; instructions jsou pravidla pro jeho běh. V UI přiložte soubory nebo vložte jejich obsah. Název souboru není přístup na disk. Nastavení nástrojů a oprávnění ve své aplikaci ověřte zvlášť.
 

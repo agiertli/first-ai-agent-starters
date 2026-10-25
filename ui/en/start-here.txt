@@ -12,7 +12,7 @@ Start with brief.md, which I am attaching or pasting below. It is the main sourc
 I want to take away a saved brief, instructions or skill, one useful actual output and a test record with limitations. Start with any questions you still need answered.
 
 --- brief.md ---
-# Sample brief — adapt to your own need
+# Completed example brief — agreed after exploring the problem
 
 ## Name
 Quotation preparation

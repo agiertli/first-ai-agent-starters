@@ -12,7 +12,7 @@ Začni brief.md, který přikládám nebo vkládám níže. Je to hlavní zdroj 
 Chci si odnést uložený brief, instrukce nebo skill, jeden skutečný použitelný výstup a záznam testů s omezeními. Začni otázkami, které ještě potřebuješ zodpovědět.
 
 --- brief.md ---
-# Ukázkový brief — upravte pro vlastní potřebu
+# Vyplněný příklad zadání — vzniká až po vyjasnění problému
 
 ## Jméno
 Příprava nabídky
