@@ -1,13 +1,13 @@
 {
-  "built_at": "2026-10-25T20:33:40.132Z",
+  "built_at": "2026-10-25T20:35:50.096Z",
   "runtime": "browser-only",
   "files": {
-    "assets/Routes-RSyYymH7.js": "6b18cbd3c8bbdc2d9548f4e3ebc2cbeb547499c52ec51dc24fec7f04afef9946",
-    "assets/index-EOEt9qUQ.css": "5273115014dce66300db34fefe795aeb966f3e4abffabf84ad625b567908750d",
-    "assets/index-t40uM_g9.js": "ee59baaa1ab8b7cf8615418d08975e33dd873bfbf7dbbba29207ad1e3e8b5d62",
+    "assets/Routes-BTjV49Re.js": "bf8377a067d72c8c2cf144bbf5c904f6cb4fd40bc914690e958ad63157c4dd21",
+    "assets/index-1z8DFcP-.css": "5f56a02598ceb51a7f89c5595406ec257aa7d475b5e90e1cac2b7048982262f9",
+    "assets/index-CLLcDDBc.js": "e296aebea38d265f074a91e0660d65d2bea2a3ee480b19a08f51164eab2afb3d",
     "favicon.svg": "61bc9a161de58248288e6905425d7180f0624c2865007b97d763fdac12043a66",
     "icons.svg": "b45fa506195cfcdef406ba9f0c77b36ddc1a7c224040926ec70abc2fdea7b93a",
-    "index.html": "c721bc11b456ac090088991d81803342dbaa78afd9949d6911026d3afced7d1f",
+    "index.html": "117091da4eef8174b3533ae227cacfe3fd10e4bd31edd4292de29011c3c772a8",
     "presentation-demo/first-agent-cs.html": "316cba9787ccdf17ab9ca16fb69edc0d9dff5354a9503807532a23b0bac9e58c",
     "presentation-demo/first-agent-en.html": "4d45d4be4e054258ec0b178ff62a18657df607dc65e0b790dbfad49fabefebcc",
     "runbook/facilitator-cs.pdf": "c5e53c13210b1747c3f9de461a8cefc854f621a3dc4b21d7d4410e13f08e6f49",
