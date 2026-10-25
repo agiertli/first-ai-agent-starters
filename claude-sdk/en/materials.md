@@ -1,0 +1,1 @@
+Fictional request: 12 gift sets from a single supplier, budget CZK 4,200 including delivery, due Friday 30 Oct 2026. Alpha: CZK 300/unit, stock 6, delivery CZK 250, arrives 29 Oct. Beta: CZK 340/unit, stock 20, free delivery, arrives 30 Oct. Gamma: CZK 250/unit, stock 30, free delivery, arrives 2 Nov. Do not send the quote or order.

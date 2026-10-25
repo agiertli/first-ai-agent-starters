@@ -29,7 +29,10 @@ cd first-ai-agent-starters
 
 - **ui/cs** or **ui/en**: ChatGPT, Claude, Gemini. Paste instructions and sample materials into your own chat. No coding.
 - **markdown/cs** or **markdown/en**: Codex / Claude Code project instructions. Requires the app and an account.
-- **sdk/cs** or **sdk/en**: Python + LiteLLM SDK, a real bounded agent loop. Requires Python 3.11+, uv and a tool-capable API.
+- **SDK / code — choose one implementation:**
+  - **claude-sdk/cs** or **claude-sdk/en**: Claude Agent SDK in Python. Claude's harness supplies the loop; our local MCP server supplies quotation tools. Requires Anthropic API access.
+  - **codex-sdk/cs** or **codex-sdk/en**: official Codex SDK in JavaScript. Codex supplies the agent harness and streams events; the same local MCP tools enforce quotation rules. Requires working Codex access, Node.js and Python.
+  - **sdk/cs** or **sdk/en**: Python + LiteLLM, a custom bounded loop for a tool-capable API such as Qwen/vLLM. Here you own the harness code.
 - **workflow/cs** or **workflow/en**: n8n JSON, a fixed input → model → review workflow. Requires an n8n instance and API access. Import/run validation in your n8n version remains required.
 
 ## Co není totéž / Important distinctions
@@ -42,7 +45,7 @@ Save your own brief, instructions, actual output, three test results and one nex
 
 ## Accounts and costs
 
-Feature availability varies by product/account. A chat subscription does not imply API credit. The workshop does not provide accounts or promise paid features. Pair up if access is missing.
+Feature availability varies by product/account. A chat subscription does not imply API credit. The workshop does not provide accounts or promise paid features. Pair up if access is missing. Claude/Codex starters have package/configuration and real MCP tool checks. Codex SDK was also live-tested for both valid and infeasible quotations. Claude still needs a live run with an Anthropic API account. The LiteLLM route was live-tested with Qwen. SDK configuration and inherited user settings matter; read the selected README before running.
 
 ## License
 

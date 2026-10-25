@@ -1,0 +1,8 @@
+{
+  "name": "first-agent-codex-starter",
+  "private": true,
+  "type": "module",
+  "scripts": {"start": "node agent.mjs"},
+  "engines": {"node": ">=20"},
+  "dependencies": {"@openai/codex-sdk": "0.164.0", "@openai/codex": "0.164.0"}
+}

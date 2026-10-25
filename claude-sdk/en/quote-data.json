@@ -1,0 +1,31 @@
+{
+  "request": {
+    "quantity": 12,
+    "budget_czk": 4200,
+    "deadline": "2026-10-30",
+    "single_supplier": true
+  },
+  "suppliers": [
+    {
+      "id": "alpha",
+      "stock": 6,
+      "unit_price_czk": 300,
+      "shipping_czk": 250,
+      "arrival": "2026-10-29"
+    },
+    {
+      "id": "beta",
+      "stock": 20,
+      "unit_price_czk": 340,
+      "shipping_czk": 0,
+      "arrival": "2026-10-30"
+    },
+    {
+      "id": "gamma",
+      "stock": 30,
+      "unit_price_czk": 250,
+      "shipping_czk": 0,
+      "arrival": "2026-11-02"
+    }
+  ]
+}

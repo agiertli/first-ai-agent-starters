@@ -1,0 +1,19 @@
+# Brief
+
+## Name
+…
+
+## Who it helps and how
+…
+
+## Inputs and tools
+…
+
+## Output
+…
+
+## Autonomy and boundaries
+…
+
+## Testable success
+…

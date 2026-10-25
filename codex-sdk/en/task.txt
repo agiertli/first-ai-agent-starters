@@ -1,0 +1,1 @@
+Prepare a feasible quote from a single supplier for this request and save a draft for approval. Show evidence that it meets the constraints. If it cannot be done, explain what prevents completion and ask about changing the brief. Do not send or order.
