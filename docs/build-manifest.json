@@ -1,0 +1,30 @@
+{
+  "built_at": "2026-10-25T08:51:41.185235+00:00",
+  "runtime": "browser-only",
+  "files": {
+    "index.html": "0d791af9590aa4902844db29793e9380a4810d5fc6ea35c639875e2f0f1717a5",
+    "icons.svg": "b45fa506195cfcdef406ba9f0c77b36ddc1a7c224040926ec70abc2fdea7b93a",
+    "favicon.svg": "61bc9a161de58248288e6905425d7180f0624c2865007b97d763fdac12043a66",
+    "workshop-starters/markdown-en.zip": "3483145c659f3bd528c8475470a91b278c58dcb65c663e323c97cb7eecb43ff5",
+    "workshop-starters/sdk-cs.zip": "0f619fcaf4c171fb7a9ccb04d65bfed5238beb243d8cdc347926b59464e51f30",
+    "workshop-starters/claude-sdk-en.zip": "bea4dcf441877cb2509a9802ff94dce9287c8701b46078ff7efb03cb08a1dca1",
+    "workshop-starters/ui-cs.zip": "ccf55c351c300e063090889c6194b9ac75f08e38c91383f7d720fa3fad7c372f",
+    "workshop-starters/codex-sdk-en.zip": "e18584723ca038403e4fb959ac19cbd90c4c781190b8e0e393d6df3d59c82eeb",
+    "workshop-starters/workflow-en.zip": "862609da7fe15bc68743d960e6c35a937ce48b1170eb0131b7eaaf529e88350b",
+    "workshop-starters/markdown-cs.zip": "09214842da9d961a10f9dca2e6a25fbf8da0e2745858554f6b4e5eb60f934c06",
+    "workshop-starters/sdk-en.zip": "9acc1ce5d19401c67ab49d390a2c600a4237e3c1c0160a95a40372ce2d16b63a",
+    "workshop-starters/claude-sdk-cs.zip": "0d7d6ef4a09221ee4c1fb3917b3001b134c79d53f71c303b2c7516b7444fd5a5",
+    "workshop-starters/ui-en.zip": "ede872bd313f54156ee6d25343349f644a526ba2299fb18d4d030a2d1f732492",
+    "workshop-starters/codex-sdk-cs.zip": "82b66e78a150fa0a10288897871e9ce4eee8c867cb7654a951a8c7b239731286",
+    "workshop-starters/workflow-cs.zip": "79e09e6de108b8f2273d9280a78a2b8f969789185da7b752f9dda18ed992e096",
+    "presentation-demo/first-agent-en.html": "4d45d4be4e054258ec0b178ff62a18657df607dc65e0b790dbfad49fabefebcc",
+    "presentation-demo/first-agent-cs.html": "316cba9787ccdf17ab9ca16fb69edc0d9dff5354a9503807532a23b0bac9e58c",
+    "runbook/facilitator-en.pdf": "052ff4304af71fd54dd7b8c5213aaf693e775a9349e531387bb3c0e0a273e0b5",
+    "runbook/facilitator-cs.pdf": "92341ec470ef28eadd522b4523af5eb678a614a3924bf8699f90b95f9357db2a",
+    "assets/index-B3X4KQWQ.css": "e313a09a94a3af2b51549c06f396b99aa89bae804a84b09996c0754b1b11a158",
+    "assets/StaticApp-BTJT0nE0.js": "e3fa13f34e25c8515743c8ff704122e227b7ccea30160cef2715f74b479f8bbe",
+    "assets/StaticApp-DJz88S3Z.css": "d3201ce9991179ff3b676fd5e8c217f5ff46fe7ed5760690823dd65bcb779618",
+    "assets/index-BFPLnNLn.js": "912ac8f12c7d84356838669fd9a28056501ec0994eb3818563910669c531e97a",
+    "assets/preload-helper-YEddpCJV.js": "b33e1dd6330ca8906b6397075aefedc0731fa865744db7156e240b4dce655c16"
+  }
+}
