@@ -15,3 +15,7 @@ Otevřete nový chat ve svém existujícím účtu a použijte postup výše. V�
 https://learn.chatgpt.com/
 https://support.claude.com/
 https://support.google.com/gemini/
+
+## Jeden soubor pro první pokus
+
+Pro vyplněný fiktivní příklad stačí otevřít start-here.txt a vložit celý obsah do nového chatu. Soubor už obsahuje tvorbu, brief, instrukce a podklady. Pro vlastní nápad je upravte; nic se nenainstaluje jen zkopírováním textu. Po nastavení spusťte task.txt.

@@ -4,7 +4,7 @@ Praktické šablony pro ChatGPT, Claude, Gemini, Codex nebo n8n.
 
 **[Otevřít workshop / Open workshop](https://agiertli.github.io/first-ai-agent-starters/)** — český i anglický obsah, diagramy, ukázky a jednotlivé ZIP šablony. Pro čtení a stahování nepotřebujete účet ani API klíč.
 
-Live model demos use your own OpenAI-compatible endpoint and key entered in the browser. The key is kept in tab session storage and sent directly to your endpoint; GitHub Pages has no shared model credential or portal backend. Use **Notes and controls → Model connection**, and **Forget connection** when finished. Model endpoints must support HTTPS and browser CORS. The static site is published from `docs/`.
+Live model demos use your own OpenAI-compatible endpoint and key entered in the browser. The key is kept in tab session storage and sent directly to your endpoint; GitHub Pages has no shared model credential or portal backend. Use **Notes and controls → Model connection**, and **Forget connection** when finished. Model endpoints must support HTTPS and browser CORS. The static site is published from `docs/`. Editable React/TypeScript sources and build/publish instructions are in **[portal/](portal/README.md)**.
 
 ## Začněte tvorbou / Start by creating
 

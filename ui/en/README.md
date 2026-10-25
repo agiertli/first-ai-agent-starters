@@ -15,3 +15,7 @@ Open a new chat in your existing account and follow the steps above. Save the re
 https://learn.chatgpt.com/
 https://support.claude.com/
 https://support.google.com/gemini/
+
+## One file for your first attempt
+
+For the completed fictional example, open start-here.txt and paste all its contents into a new chat. It includes creation, brief, instructions and materials. Adapt them for your own idea; copying text does not install anything. After setup, run task.txt.

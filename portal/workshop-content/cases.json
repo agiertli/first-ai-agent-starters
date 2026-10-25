@@ -1,0 +1,212 @@
+[
+  {
+    "id": "quote",
+    "icon": "↗",
+    "title": {
+      "cs": "Obchodní nabídka",
+      "en": "Customer quotation"
+    },
+    "subtitle": {
+      "cs": "Vybrat dodavatele podle skutečných omezení",
+      "en": "Choose a supplier against actual constraints"
+    },
+    "brief": {
+      "cs": {
+        "name": "Příprava nabídky",
+        "goal": "Z poptávky vybrat jediného dodavatele, který splní množství, rozpočet a termín. Samostatně porovnat možnosti a změnit návrh, pokud kontrola selže.",
+        "inputs": "Poptávka, nabídky dodavatelů, dostupnost, doprava a termíny. V této ukázce jde o fiktivní podklady.",
+        "output": "Nabídka ke schválení: dodavatel, množství, součet včetně dopravy, splněná omezení a důvod odmítnutí jiných variant.",
+        "limits": "Smí číst přiložené soubory, počítat a vytvořit návrh souboru v určené výstupní složce. Nesmí objednat ani poslat nabídku. Při chybějícím termínu nebo bez proveditelné varianty se zeptá. Nejvýše 3 opravy.",
+        "success": "Výsledek splní množství, rozpočet a termín. Alespoň jedna kontrola má dohledatelný výsledek; při změně dostupnosti agent změní plán nebo přizná nemožnost."
+      },
+      "en": {
+        "name": "Quotation preparation",
+        "goal": "Choose a single supplier that meets the requested quantity, budget and deadline. Compare options independently and change the proposal if validation fails.",
+        "inputs": "Customer request, supplier offers, stock, delivery fees and dates. These demonstration materials are fictional.",
+        "output": "A proposal for approval: supplier, quantity, total including delivery, satisfied constraints and reasons for rejecting alternatives.",
+        "limits": "May read attached files, calculate and create a draft in the designated output folder. Must not order or send the quote. Ask if the deadline is missing or no option is feasible. At most 3 revisions.",
+        "success": "Quantity, budget and deadline are met. At least one check has an observable result; changed stock causes a revised plan or an honest infeasibility report."
+      }
+    },
+    "materials": {
+      "cs": "Fiktivní poptávka: 12 dárkových sad od jediného dodavatele, rozpočet 4 200 Kč včetně dopravy, doručení do pátku 30. 10. 2026. Alfa: 300 Kč/kus, skladem 6 ks, doprava 250 Kč, dodání 29. 10. Beta: 340 Kč/kus, skladem 20 ks, doprava 0 Kč, dodání 30. 10. Gama: 250 Kč/kus, skladem 30 ks, doprava 0 Kč, dodání 2. 11. Nabídku nesmíš odeslat ani objednat.",
+      "en": "Fictional request: 12 gift sets from a single supplier, budget CZK 4,200 including delivery, due Friday 30 Oct 2026. Alpha: CZK 300/unit, stock 6, delivery CZK 250, arrives 29 Oct. Beta: CZK 340/unit, stock 20, free delivery, arrives 30 Oct. Gamma: CZK 250/unit, stock 30, free delivery, arrives 2 Nov. Do not send the quote or order."
+    },
+    "task": {
+      "cs": "Připrav proveditelnou nabídku od jediného dodavatele pro tuto poptávku a ulož ji jako návrh ke schválení. Dolož, že splňuje podmínky. Pokud to nejde, vysvětli co brání dokončení a zeptej se na změnu zadání. Nic neposílej ani neobjednávej.",
+      "en": "Prepare a feasible quote from a single supplier for this request and save a draft for approval. Show evidence that it meets the constraints. If it cannot be done, explain what prevents completion and ask about changing the brief. Do not send or order."
+    },
+    "autonomy": {
+      "cs": "Vybere podklady, porovná dodavatele, spočítá cenu a po neúspěšné kontrole vybere jinou možnost.",
+      "en": "Chooses sources, compares suppliers, calculates cost and selects another option after a failed check."
+    },
+    "tools": {
+      "cs": "Čtení souborů + výpočet/kontrola podmínek + vytvoření návrhu souboru. SDK šablona poskytuje tyto nástroje přímo.",
+      "en": "File reading + calculation/constraint validation + draft-file creation. The SDK starter provides these tools directly."
+    },
+    "stop": {
+      "cs": "Žádná varianta nevyhovuje nebo chybí zásadní údaj → konkrétní otázka člověku. Objednávka vyžaduje samostatné schválení a není zde dostupná.",
+      "en": "No option fits or an essential fact is missing → ask the person. Ordering requires separate approval and is unavailable here."
+    },
+    "proof": {
+      "cs": "Změňte dostupnost Bety z 20 na 8. Správný výsledek už není stejná nabídka: je nutné přehodnotit plán.",
+      "en": "Change Beta stock from 20 to 8. The same quotation is no longer valid: the plan must be reconsidered."
+    },
+    "branch": {
+      "cs": [
+        "Cíl: 12 sad do 4 200 Kč",
+        "Čtení nabídek a dostupnosti",
+        "Kontrola zvoleného návrhu",
+        "Nesplňuje podmínky → jiná varianta",
+        "Splňuje podmínky → návrh ke schválení"
+      ],
+      "en": [
+        "Goal: 12 sets within CZK 4,200",
+        "Read offers and stock",
+        "Check the selected proposal",
+        "Fails constraints → another option",
+        "Passes constraints → proposal for approval"
+      ]
+    }
+  },
+  {
+    "id": "presentation",
+    "icon": "▤",
+    "title": {
+      "cs": "Prezentace na míru",
+      "en": "Personal presentation"
+    },
+    "subtitle": {
+      "cs": "Od zadání k ověřenému HTML souboru",
+      "en": "From a brief to a checked HTML file"
+    },
+    "brief": {
+      "cs": {
+        "name": "Prezentační agent",
+        "goal": "Z podkladů vytvořit stručnou prezentaci pro konkrétní publikum. Samostatně zvolit strukturu, vytvořit HTML, spustit dostupnou kontrolu a opravit zjištěné chyby.",
+        "inputs": "Publikum, délka, téma, osobní cíl, schválené podklady a pravidla značky.",
+        "output": "Jeden samostatný HTML soubor s poznámkami řečníka a přehledem provedených kontrol.",
+        "limits": "Smí číst zadané podklady, vytvořit soubory ve výstupní složce a spustit určený renderer a validátor. Chybějící brief si vyžádá. Nic nepublikuje. Nejvýše 3 opravy; neprovedenou vizuální kontrolu přizná.",
+        "success": "Soubor jde otevřít, má poznámky ke každému slidu, odpovídá publiku a času; neúspěšná kontrola vyvolá opravu, ne pouhé prohlášení „hotovo“."
+      },
+      "en": {
+        "name": "Presentation agent",
+        "goal": "Turn source materials into a concise presentation for a specific audience. Choose the structure, create HTML, run available checks and repair detected errors.",
+        "inputs": "Audience, duration, topic, personal goal, approved source materials and brand rules.",
+        "output": "One standalone HTML file with speaker notes and a record of checks performed.",
+        "limits": "May read designated materials, create files in the output folder and run the specified renderer and validator. Ask for missing brief details. Do not publish. At most 3 repair attempts; disclose any visual review not performed.",
+        "success": "The file opens, every slide has notes, and the deck fits the audience and duration; a failed check causes a repair, not merely a claim of completion."
+      }
+    },
+    "materials": {
+      "cs": "Ukázkový brief: dospělá veřejnost, 6 minut, téma Můj první AI agent, cíl vysvětlit rozdíl model/nástroj. Neověřené aktuální počasí neuvádět. Použij instalovaný personal-presentation skill, pokud je dostupný; jinak si vyžádej pravidla a nástroje pro tvorbu souboru.",
+      "en": "Sample brief: adult general audience, 6 minutes, My first AI agent, goal: explain model versus tool. Do not invent current weather. Use the installed personal-presentation skill if available; otherwise request the rules and file-generation tools."
+    },
+    "task": {
+      "cs": "Vytvoř z briefu prezentaci. Chybějící zadání si doplň otázkou, vyber strukturu, vytvoř HTML a ověř jej dostupnými nástroji. Nalezenou chybu oprav a ověř znovu. Vrať soubor a skutečné výsledky kontrol.",
+      "en": "Create a presentation from the brief. Ask for missing input, choose the structure, create HTML and check it with available tools. Repair an identified error and check again. Return the file and actual validation results."
+    },
+    "autonomy": {
+      "cs": "Volí strukturu a podklady; podle výsledku kontroly přepracuje soubor a kontrolu zopakuje.",
+      "en": "Chooses structure and sources; revises the file based on validation results and checks it again."
+    },
+    "tools": {
+      "cs": "Čtení podkladů, tvorba souborů, renderer, validátor, případně prohlížeč pro vizuální kontrolu. Skill popisuje postup; nástroje zajišťuje aplikace.",
+      "en": "Read sources, write files, renderer, validator, optionally a browser for visual review. The skill describes the procedure; the application provides tools."
+    },
+    "stop": {
+      "cs": "Před tvorbou si vyžádá chybějící publikum/délku/téma/cíl. Při opakované chybě vrátí rozpracovaný soubor a vysvětlí problém.",
+      "en": "Ask for missing audience/duration/topic/goal before building. On repeated failure, return the partial file and explain the problem."
+    },
+    "proof": {
+      "cs": "Odstraňte poznámky z jednoho slidu. Ukažte chybu validátoru, opravu agentem a nový výsledek kontroly.",
+      "en": "Remove notes from one slide. Show the validator failure, the agent’s repair and the new validation result."
+    },
+    "branch": {
+      "cs": [
+        "Cíl a čtyři údaje briefu",
+        "Čtení pravidel a podkladů",
+        "Vytvoření HTML + kontrola",
+        "Kontrola selže → opravit soubor",
+        "Kontrola projde → předat člověku"
+      ],
+      "en": [
+        "Goal and four brief details",
+        "Read rules and sources",
+        "Create HTML + validate",
+        "Validation fails → repair file",
+        "Validation passes → human review"
+      ]
+    }
+  },
+  {
+    "id": "outing",
+    "icon": "⌁",
+    "title": {
+      "cs": "Plán na volné odpoledne",
+      "en": "An afternoon plan"
+    },
+    "subtitle": {
+      "cs": "Najít proveditelnou variantu podle aktuálních dat",
+      "en": "Find a feasible option using current data"
+    },
+    "brief": {
+      "cs": {
+        "name": "Plánovač odpoledne",
+        "goal": "Vybrat mezi Řevnicemi a Dobřichovicemi místo na dnešní procházku podle zadaných limitů. Podle zjištění doplnit potřebné údaje nebo doporučení změnit.",
+        "inputs": "Dnešní datum, dvě místa, čas a preference; aktuální počasí z povoleného zdroje.",
+        "output": "Doporučení nebo zpráva, že žádná varianta nesplňuje limity, se zdroji a časy dat.",
+        "limits": "Smí vyhledat aktuální informace dostupným nástrojem; nesmí rezervovat ani platit. Neznámý údaj nenahrazuje odhadem. Nepotvrzuje bezpečnost trasy ani vhodnost pro konkrétní dítě.",
+        "success": "Zjištěná data skutečně podporují volbu. Při dešti či nedostupných datech doporučení změní nebo položí otázku."
+      },
+      "en": {
+        "name": "Afternoon planner",
+        "goal": "Choose between Řevnice and Dobřichovice for a walk today against stated constraints. Retrieve missing information or change the recommendation based on findings.",
+        "inputs": "Today’s date, two locations, time and preferences; current weather from an allowed source.",
+        "output": "A recommendation, or a report that no option meets the constraints, with sources and data timestamps.",
+        "limits": "May retrieve current information using an available tool; must not book or pay. Never replace unknown data with invented estimates. Does not certify route safety or suitability for a particular child.",
+        "success": "Retrieved data actually supports the choice. Rain or missing data causes an updated recommendation or a question."
+      }
+    },
+    "materials": {
+      "cs": "Procházka dnes. Řevnice nebo Dobřichovice. Preference: žádné předpovídané srážky a vítr nejvýše 20 km/h. Pokud ani jedna varianta nevyhovuje, zeptej se, zda změnit čas nebo zvolit vnitřní program. Tato preference není bezpečnostní limit.",
+      "en": "A walk today in Řevnice or Dobřichovice. Preference: no forecast precipitation and wind at most 20 km/h. If neither fits, ask whether to change time or choose an indoor activity. This preference is not a safety threshold."
+    },
+    "task": {
+      "cs": "Vyber proveditelné místo na dnešní procházku. Sám zjisti potřebná aktuální data dostupným nástrojem, porovnej je s preferencemi a rozhodni, zda doporučit místo, doplnit údaj nebo se zeptat na změnu plánu. Uveď zdroje a čas.",
+      "en": "Choose a feasible location for today’s walk. Retrieve the current data you need using an available tool, compare with preferences and decide whether to recommend a location, retrieve more information or ask about changing the plan. Include sources and timestamps."
+    },
+    "autonomy": {
+      "cs": "Sám získává data, porovnává varianty a při nesplnění podmínek hledá další krok místo vynucené odpovědi.",
+      "en": "Retrieves data, compares options and chooses a next step when constraints are unmet instead of forcing an answer."
+    },
+    "tools": {
+      "cs": "Aktuální počasí nebo webové vyhledávání v aplikaci. Portál má skutečný nástroj počasí; textová šablona sama přístup k internetu nepřidá.",
+      "en": "Current-weather or web-search tools in the application. The portal has a real weather tool; a text template does not create internet access."
+    },
+    "stop": {
+      "cs": "Žádná vhodná varianta nebo výpadek zdroje → přiznat omezení a vyžádat změnu plánu. Žádné automatické rezervace.",
+      "en": "No suitable option or unavailable source → disclose the limit and ask about changing the plan. No automatic bookings."
+    },
+    "proof": {
+      "cs": "Zpřísněte limit větru. Sledujte, zda agent přehodnotí doporučení podle týchž dat, místo aby jen přepsal formulaci.",
+      "en": "Tighten the wind constraint. Observe whether the agent reconsiders the recommendation using the same data, rather than merely rewording it."
+    },
+    "branch": {
+      "cs": [
+        "Cíl a preference",
+        "Získat aktuální data",
+        "Porovnat možnosti",
+        "Nesplňuje preference → změna plánu?",
+        "Splňuje preference → doložené doporučení"
+      ],
+      "en": [
+        "Goal and preferences",
+        "Retrieve current data",
+        "Compare options",
+        "Preferences unmet → change the plan?",
+        "Preferences met → sourced recommendation"
+      ]
+    }
+  }
+]
