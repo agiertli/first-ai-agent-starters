@@ -3,7 +3,8 @@ import type { Language, Brief } from './content';
 import { browserRuntime } from './runtime';
 import { getBrowserConnection, subscribeConnection } from './browserConnection';
 import { runBrowserAgent } from './browserAgent';
-export interface TraceEvent { type: string; content?: string; name?: string; iteration?: number; arguments?: unknown; result?: unknown; available_tools?: string[] }
+import { safeException, type RequestDiagnostic } from './browserModel';
+export interface TraceEvent { diagnostic?: RequestDiagnostic; type: string; content?: string; name?: string; iteration?: number; arguments?: unknown; result?: unknown; available_tools?: string[] }
 export interface RunInput { instructions: string; task: string; materials: string; mode: 'chat' | 'agent'; weather: boolean; language: Language }
 export interface RunRecord { at: string; input: RunInput; events: TraceEvent[]; status: 'done' | 'error' | 'stopped' }
 export interface Workbook { brief: Brief; materials: string; task: string; customInstructions: string; weather: boolean; tests: string[]; next: string; records: RunRecord[] }
@@ -63,7 +64,8 @@ export function usePrototype(onRecord: (record: RunRecord) => void) {
         }
       }
       if (!trace.some(e => e.type === 'done' || e.type === 'error')) throw new Error('Incomplete stream');
-    } catch {
+    } catch (error) {
+      if (!abort.signal.aborted) console.error('[workshop:run] failed', safeException(error, [getBrowserConnection()?.apiKey || '', input.instructions, input.task, input.materials]));
       status = abort.signal.aborted ? 'stopped' : 'error';
       push({ type: status === 'stopped' ? 'stopped' : 'error', content: input.language === 'cs' ? (status === 'stopped' ? 'Příjem byl zastaven. Rozpracovaný požadavek u poskytovatele může ještě doběhnout.' : 'Spojení selhalo. Zkontrolujte připojení modelu. Výsledek nebyl nahrazen simulací.') : (status === 'stopped' ? 'Receiving stopped. An in-flight provider request may still finish.' : 'Connection failed. Check the model connection. No simulated result was substituted.') });
     } finally {

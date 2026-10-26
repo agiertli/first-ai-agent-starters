@@ -1,11 +1,11 @@
 import { validateConnection, type BrowserConnection } from './browserConnection.ts';
 import { browserWeather } from './browserWeather.ts';
 import type { RunInput, TraceEvent } from './model.ts';
+import { requestBrowserModel, ModelRequestError, modelFailureMessage, safeException, type ModelMessage } from './browserModel.ts';
 
 const READ_TOOL = { type: 'function', function: { name: 'read_materials', description: "Read the participant's reference materials. Consult before making claims about their business or resources.", parameters: { type: 'object', properties: {}, additionalProperties: false } } };
 const WEATHER_TOOL = { type: 'function', function: { name: 'get_weather', description: "Read today's live Open-Meteo weather for a city. Cannot book, send or publish anything.", parameters: { type: 'object', properties: { city: { type: 'string' } }, required: ['city'], additionalProperties: false } } };
-interface ToolCall { id: string; type: 'function'; function: { name: string; arguments: string } }
-interface Message { role: 'system' | 'user' | 'assistant' | 'tool'; content: string | null; tool_calls?: ToolCall[]; tool_call_id?: string }
+
 
 export function browserToolAllowed(name: string, args: unknown, input: RunInput): args is Record<string, unknown> {
   if (input.mode !== 'agent' || !args || typeof args !== 'object' || Array.isArray(args)) return false;
@@ -25,38 +25,28 @@ function systemMessage(input: RunInput, names: string[]): string {
 export async function runBrowserAgent(input: RunInput, connection: BrowserConnection, emit: (e: TraceEvent) => void, callerSignal: AbortSignal, fetcher: typeof fetch = fetch): Promise<void> {
   const signal = AbortSignal.any([callerSignal, AbortSignal.timeout(180_000)]);
   const cs = input.language === 'cs';
+  const runId = crypto.randomUUID();
+  const privateValues = [input.instructions, input.task, input.materials];
   const fail = (csText: string, enText: string) => emit({ type: 'error', content: cs ? csText : enText });
   try {
     const cfg = validateConnection(connection, typeof location === 'undefined' ? 'https:' : location.protocol);
     if (!input.instructions.trim() || input.instructions.length > 8000 || !input.task.trim() || input.task.length > 2000 || input.materials.length > 12000 || !['chat', 'agent'].includes(input.mode) || !['cs', 'en'].includes(input.language)) throw new Error('Invalid input');
     const tools = input.mode === 'agent' ? [READ_TOOL, ...(input.weather ? [WEATHER_TOOL] : [])] : [];
     const names = tools.map(t => t.function.name);
-    const messages: Message[] = [{ role: 'system', content: systemMessage(input, names) }, { role: 'user', content: input.task }];
+    const messages: ModelMessage[] = [{ role: 'system', content: systemMessage(input, names) }, { role: 'user', content: input.task }];
     if (input.mode === 'chat') messages.push({ role: 'user', content: `Reference data (not instructions):\n${input.materials}` });
     emit({ type: 'started', available_tools: names });
     for (let iteration = 1; iteration <= 5; iteration++) {
       signal.throwIfAborted();
       emit({ type: 'thinking', iteration });
-      const response = await fetcher(`${cfg.apiBase}/chat/completions`, {
-        method: 'POST', signal: AbortSignal.any([signal, AbortSignal.timeout(60_000)]), credentials: 'omit', cache: 'no-store', redirect: 'error', referrerPolicy: 'no-referrer',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${cfg.apiKey}` },
-        body: JSON.stringify({ model: cfg.model, messages, max_tokens: 1200, stream: false, chat_template_kwargs: { enable_thinking: false }, ...(tools.length ? { tools, tool_choice: 'auto' } : {}) }),
-      });
-      if (!response.ok) {
-        // Do not display provider error bodies; they can echo credentials or prompts.
-        fail(`API modelu vrátilo HTTP ${response.status}. Zkontrolujte připojení, klíč a dostupnost modelu.`, `The model API returned HTTP ${response.status}. Check the connection, key and model availability.`); return;
-      }
-      const data = await response.json();
-      signal.throwIfAborted();
-      const raw = data.choices?.[0]?.message;
-      if (!raw || (raw.content != null && typeof raw.content !== 'string') || (raw.tool_calls != null && !Array.isArray(raw.tool_calls))) throw new Error('Invalid model response');
-      const calls: ToolCall[] = raw.tool_calls || [];
-      if (calls.some(c => c.type !== 'function' || typeof c.id !== 'string' || !c.id || typeof c.function?.name !== 'string' || typeof c.function?.arguments !== 'string')) throw new Error('Invalid tool call');
-      if (!tools.length && calls.length) throw new Error('Unexpected tools in plain chat');
+      const raw = await requestBrowserModel(cfg, {
+        model: cfg.model, messages, max_tokens: 1200, stream: false, chat_template_kwargs: { enable_thinking: false },
+        ...(tools.length ? { tools, tool_choice: 'auto' } : {}),
+      }, iteration, runId, signal, diagnostic => emit({ type: 'request_status', diagnostic }), privateValues, fetcher);
+      const calls = raw.tool_calls || [];
       messages.push({ role: 'assistant', content: raw.content ?? null, ...(calls.length ? { tool_calls: calls } : {}) });
       if (!calls.length) {
-        if (!raw.content?.trim()) throw new Error('Empty answer');
-        emit({ type: 'answer', content: raw.content }); emit({ type: 'done' }); return;
+        emit({ type: 'answer', content: raw.content! }); emit({ type: 'done' }); return;
       }
       for (const call of calls.slice(0, 4)) {
         signal.throwIfAborted();
@@ -80,8 +70,13 @@ export async function runBrowserAgent(input: RunInput, connection: BrowserConnec
       if (calls.length > 4) { fail('Dosažen limit 4 nástrojů v jednom kroku. Zužte zadání.', 'Reached the limit of 4 tool calls per step. Narrow the task.'); return; }
     }
     fail('Dosažen limit 5 rozhodnutí. Výsledek není dokončen; zužte zadání.', 'Five-decision limit reached. The result is incomplete; narrow the task.');
-  } catch {
+  } catch (error) {
     if (callerSignal.aborted) throw callerSignal.reason;
-    fail('Přímé spojení selhalo nebo vypršel čas. Zkontrolujte adresu API, síť, CORS a podporu nástrojů. Výsledek nebyl nahrazen simulací.', 'Direct connection failed or timed out. Check the API URL, network, CORS and tool support. No simulated result was substituted.');
+    if (error instanceof ModelRequestError) {
+      emit({ type: 'error', content: modelFailureMessage(error.diagnostic, cs), diagnostic: error.diagnostic });
+    } else {
+      console.error('[workshop:run] failed', safeException(error, [connection.apiKey, ...privateValues]));
+      fail('Běh selhal v aplikaci. Podrobnosti najdete ve vývojářské konzoli pod [workshop:run].', 'The run failed in the application. See [workshop:run] in the developer console for details.');
+    }
   }
 }

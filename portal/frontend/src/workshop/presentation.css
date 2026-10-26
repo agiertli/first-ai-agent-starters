@@ -103,3 +103,9 @@
 .ws-weather-stage>.ws-adjust-demo{align-self:flex-start;font-size:12px;padding:5px 10px}
 .ws-weather-stage.running-view .ws-connection-strip{display:none}
 @media(min-width:900px) and (min-height:650px){.ws-weather-stage.running-view .ws-run-step{min-height:105px;max-height:155px}.ws-weather-stage.running-view .ws-run-step-content{font-size:16px}.ws-weather-stage.running-view .ws-run-highlight{font-size:18px}.ws-weather-stage.running-view .ws-run-output-scroll{font-size:18px}}
+.ws-request-status{border-bottom:1px solid #dce3ed;padding:0 0 12px;margin:0 0 16px;font-size:13px;line-height:1.5;color:#516077}
+.ws-request-timing{display:flex;justify-content:space-between;gap:16px;color:#223047}.ws-request-timing>span{white-space:nowrap;font-variant-numeric:tabular-nums}
+.ws-request-status progress{display:block;width:100%;height:6px;margin:12px 0;accent-color:#7462b0}
+.ws-request-status p{font-size:13px;margin:8px 0;line-height:1.5}.ws-request-status summary{cursor:pointer;font-weight:500;padding-top:8px}
+.ws-request-status pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:220px;overflow:auto;font-size:12px;background:#f5f7fb;padding:12px}
+.ws-request-status button,.ws-error button{font-size:13px;padding:8px 12px}.ws-request-status [role=status]{margin-left:12px}

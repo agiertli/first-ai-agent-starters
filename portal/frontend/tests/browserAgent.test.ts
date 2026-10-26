@@ -25,7 +25,7 @@ async function run(responses: Response[], request = input) {
 
 test('browser harness executes the tool, returns its result and emits actual lifecycle events', async () => {
   const { events, requests } = await run([reply(null, [call()]), reply('Draft costs 55 CZK')]);
-  assert.deepEqual(events.map(e => e.type), ['started', 'thinking', 'tool', 'tool_executing', 'result', 'context_updated', 'thinking', 'answer', 'done']);
+  assert.deepEqual(events.filter(e => e.type !== 'request_status').map(e => e.type), ['started', 'thinking', 'tool', 'tool_executing', 'result', 'context_updated', 'thinking', 'answer', 'done']);
   assert.ok(requests[1].body.messages.some((m: any) => m.role === 'tool' && m.tool_call_id === 'tool-1' && m.content.includes('Tea 55 CZK')));
   assert.equal(requests[0].body.tool_choice, 'auto');
   assert.ok(!JSON.stringify(events).includes(connection.apiKey));

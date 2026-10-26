@@ -92,6 +92,28 @@ The endpoint must authenticate requests and allow HTTPS/CORS from the hosting
 origin. The browser's run limits are demonstration controls, not security quotas
 on the inference server. There is no shared anonymous model proxy.
 
+### Debugging a live request
+
+The answer panel shows elapsed waiting time and connection status independently
+of diagram playback. Each model request has a 60-second limit; the complete run
+has a three-minute limit. Responses arrive as a whole, so an empty answer panel
+while waiting does not prove the model is stuck. The timer measures time used,
+not model completion progress. There are no automatic retries.
+
+Open **Connection diagnostics** in the answer panel, or filter the browser's
+DevTools Console for `[workshop:model]`. Each request logs its start, response
+headers, completion or failure, with elapsed time, HTTP status when available,
+and the caught exception's name, message and stack with private values redacted.
+Diagnostics include the endpoint and model name, but omit credentials, prompts
+and response bodies. A provider request ID is included only if CORS exposes it.
+The panel can copy these diagnostic details for troubleshooting.
+
+Timeouts, HTTP failures and malformed responses have separate messages. A fetch
+network error may still leave JavaScript unable to distinguish CORS, TLS, a
+blocked redirect or a lost connection; inspect **Network → chat/completions**
+and the browser's own console messages. A cancelled or timed-out browser request
+does not guarantee that inference has stopped on the server.
+
 The source keeps two compatibility modules (`SettingsPanel.tsx` and
 `settingsStorage.ts`) used by the original local technical portal. They are
 excluded from this static build; the staging script rejects bundles containing

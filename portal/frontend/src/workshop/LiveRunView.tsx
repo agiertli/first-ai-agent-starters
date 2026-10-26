@@ -5,6 +5,7 @@ import { captions, type Phase } from './diagramContent';
 import { DIAGRAM_EVENT_TYPES, initialPlayback, playbackReducer } from './diagramPlayback';
 import { w, type Language } from './content';
 import type { TraceEvent } from './model';
+import { RequestStatus } from './RequestStatus';
 
 function eventLabel(e: TraceEvent, lang: Language) {
   const name = e.name === 'read_materials' ? w('Přečíst podklady', 'Read materials')[lang] : e.name === 'get_weather' ? w('Zjistit počasí', 'Get weather')[lang] : e.name;
@@ -72,6 +73,7 @@ export function LiveRunView({ events, lang, chat, task, runId, running, runContr
   const tool = trace.slice(0, index + 1).findLast(e => e.type === 'tool')?.name;
   const answer = events.findLast(e => e.type === 'answer');
   const error = events.findLast(e => e.type === 'error' || e.type === 'stopped');
+  const diagnostic = events.findLast(e => e.diagnostic)?.diagnostic;
   const ended = ['answer', 'error', 'stopped'].includes(trace.at(-1)?.type || '');
   const tools = events.find(e => e.type === 'started')?.available_tools;
   useEffect(() => { dispatch({ type: 'replay', count: 0 }); }, [runId]);
@@ -101,10 +103,11 @@ export function LiveRunView({ events, lang, chat, task, runId, running, runContr
         </section>
       </div>
       <section className="ws-run-output" aria-label={t('Skutečná odpověď modelu', 'Actual model answer')}>
-        <header><h3>{t('Skutečná odpověď modelu', 'Actual model answer')}</h3><p className="ws-muted">{answer ? index < count - 1 ? t('Odpověď už dorazila. Vlevo sledujete předchozí kroky.', 'The answer has arrived. The left panel shows earlier steps.') : t('Běh dokončen. Správnost posuzujete vy.', 'Run complete. You assess its correctness.') : running ? t('Model pracuje. Odpověď se zobrazí, jakmile dorazí.', 'The model is working. The answer appears as soon as it arrives.') : t('Odpověď se zobrazí po živém spuštění.', 'The answer appears after a live run.')}</p></header>
+        <header><h3>{t('Skutečná odpověď modelu', 'Actual model answer')}</h3><p className="ws-muted">{answer ? index < count - 1 ? t('Odpověď už dorazila. Vlevo sledujete předchozí kroky.', 'The answer has arrived. The left panel shows earlier steps.') : t('Běh dokončen. Správnost posuzujete vy.', 'Run complete. You assess its correctness.') : error ? t('Běh skončil bez úplného výsledku.', 'The run ended without a complete result.') : running ? t('Běh pokračuje. Stav připojení níže je živý i při pozastaveném přehrávání.', 'The run is active. Connection status below stays live even when playback is paused.') : t('Odpověď se zobrazí po živém spuštění.', 'The answer appears after a live run.')}</p></header>
         <div className="ws-run-output-scroll ws-answer" tabIndex={0} aria-label={t('Obsah odpovědi', 'Answer content')}>
-          {answer ? <ReactMarkdown>{answer.content}</ReactMarkdown> : <p className="ws-muted">{t('Sledujte, odkud model získá informace a zda mu stačí k odpovědi.', 'Watch where the model gets information and whether it has enough to answer.')}</p>}
-          {error && <div role="alert" className="ws-error"><strong>{t('Pokus není dokončen', 'Attempt incomplete')}</strong><p>{error.content}</p></div>}
+          {error && <div role="alert" className="ws-error"><strong>{t('Pokus není dokončen', 'Attempt incomplete')}</strong><p>{error.content}</p>{diagnostic && <button onClick={() => window.dispatchEvent(new Event('first-agent-open-connection'))}>{t('Zkontrolovat připojení', 'Check connection')}</button>}</div>}
+          {diagnostic && <RequestStatus key={`${runId}-${diagnostic.id}`} diagnostic={diagnostic} running={running} lang={lang} />}
+          {answer ? <ReactMarkdown>{answer.content}</ReactMarkdown> : !diagnostic && !error && <p className="ws-muted">{t('Sledujte, odkud model získá informace a zda mu stačí k odpovědi.', 'Watch where the model gets information and whether it has enough to answer.')}</p>}
         </div>
       </section>
     </div>
