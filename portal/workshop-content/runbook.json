@@ -125,7 +125,7 @@
     "blocks": [
       [
         "EXPLANATION AND DEMOS",
-        "One idea per slide; details under Facilitator → Notes. Chat / workflow / agent: who chooses a step? Start the house at its foundations; stairs mean connections, not a fixed sequence. The diagram separates model, app and tools; results lead to another call. Use the decision tree rather than forcing an agent. Check weather source, location and time. Start the presentation demo with the human prompt: AI wrote the code. Tabs: prompt / installation / result / files."
+        "One idea per slide; details under Facilitator → Notes. Chat / workflow / agent: who chooses a step? Four parts of the hired assistant: you and the task, papers (context), brain and hands (model and tools), the office manager (the app). In the loop the model only asks for a tool, the app checks and runs it, and the result leads to another model call. Use the decision tree rather than forcing an agent. Check weather source, location and time. Start the presentation demo with the human prompt: AI wrote the code. Tabs: prompt / installation / result / files."
       ],
       [
         "BRIEF AND 70 MINUTES OF PRACTICE",
