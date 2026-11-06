@@ -11,49 +11,19 @@ export const BrainIcon = () => <Icon><path d="M32 7a15 15 0 0 0-8 27.7V41h16v-6.
 export const HandsIcon = () => <Icon><path d="M46 9a11 11 0 0 0-10 15L11 49a4 4 0 0 0 6 6l25-25a11 11 0 0 0 15-10l-7 6-6-1-1-6z"/></Icon>;
 export const ManagerIcon = () => <Icon><rect x="14" y="12" width="36" height="44" rx="4"/><rect x="24" y="7" width="16" height="9" rx="2"/><path d="M23 35l6 6 12-13"/></Icon>;
 
-export function AssistantTeam({lang}:{lang:Language}) {
- const t=(cs:string,en:string)=>lang==='cs'?cs:en;
- const [part,setPart]=useState(0);
- const parts=[
-  {name:t('Vy a váš úkol','You and your task'),term:t('cíl','goal'),text:t('Co potřebujete, pro koho a proč. Bez zadání asistent neví, kde začít.','What you need, for whom and why. Without a task the assistant does not know where to start.')},
-  {name:t('Podklady a pokyny','Papers and instructions'),term:'context',text:t('Co asistentovi položíte na stůl: dokumenty, pravidla a dosavadní rozhovor. Vaše konkrétní podklady model nemá k dispozici, dokud mu je aplikace nezpřístupní.','What you put on the assistant’s desk: documents, rules and the conversation so far. Your specific materials are not available to the model until the application provides them.')},
-  {name:t('Mozek a ruce','Brain and hands'),term:t('model · nástroje (tools)','model · tools'),text:t('Mozek (model) jen navrhne další krok. Ruce (nástroje) pak umějí něco zjistit nebo udělat, třeba najít počasí nebo přečíst e-mail.','The brain (model) only suggests the next step. The hands (tools) can then look something up or do something, such as finding the weather or reading an email.')},
-  {name:t('Vedoucí kanceláře','The office manager'),term:t('aplikace (ChatGPT, Claude…)','the application (ChatGPT, Claude…)'),text:t('Aplikace předá asistentovi podklady, pustí ho k nástrojům jen s povolením, opakuje kroky a pozná, kdy skončit.','The application hands the assistant the papers, lets them use tools only with permission, repeats the steps and knows when to stop.')},
- ];
- const card=(i:number,icons:ReactNode,label:string,term:string)=><button className="ws-fd-card" aria-pressed={part===i} onClick={()=>setPart(i)}><span className="ws-fd-icons">{icons}</span><strong>{label}</strong><small>{term}</small></button>;
- return <div className="ws-fd-team">
-  <div className="ws-fd-scene" role="group" aria-label={t('Asistent a jeho okolí: vyberte část','The assistant and what surrounds them: choose a part')}>
-   {card(0,<PersonIcon/>,parts[0].name,parts[0].term)}
-   <span className="ws-fd-arrow" aria-hidden="true">→</span>
-   <div className={`ws-fd-frame${part===3?' is-active':''}`}>
-    <button className="ws-fd-frame-label" aria-pressed={part===3} onClick={()=>setPart(3)}><ManagerIcon/><span><strong>{parts[3].name}</strong><small>{parts[3].term}</small></span></button>
-    <div className="ws-fd-assistant">
-     {card(1,<PapersIcon/>,parts[1].name,parts[1].term)}
-     <span className="ws-fd-arrow" aria-hidden="true">+</span>
-     {card(2,<><BrainIcon/><HandsIcon/></>,parts[2].name,parts[2].term)}
-    </div>
-   </div>
-  </div>
-  <div className="ws-fd-definition">
-   <div><h2>{parts[part].name}</h2><p aria-live="polite">{parts[part].text}</p></div>
-   <button onClick={()=>setPart((part+1)%4)}>{part===3?t('Zpět na začátek','Back to the start'):t('Další část →','Next part →')}</button>
-  </div>
-  <small className="ws-fd-note">{t('Obrázek je jen pomůcka. Části se používají podle potřeby, ne v pevném pořadí.','The picture is only a memory aid. The parts are used as needed, not in a fixed order.')}</small>
- </div>;
-}
 
 export type Actor='you'|'app'|'model'|'tool';
 interface Step {from:Actor;to:Actor|null;round:0|1|2;speaker:string;quote:string;caption:string}
 
 // The application sits in the middle: you, the model and the tool only ever talk to it. The arrow shows which way one message travels.
-export function AgentStage({lang,from,to,also=[],loopback=false,noTool=false}:{lang:Language;from:Actor|null;to:Actor|null;also?:Actor[];loopback?:boolean;noTool?:boolean}) {
+export function AgentStage({lang,from,to,also=[],loopback=false,noTool=false,tool='get_weather'}:{lang:Language;from:Actor|null;to:Actor|null;also?:Actor[];loopback?:boolean;noTool?:boolean;tool?:string}) {
  const t=(cs:string,en:string)=>lang==='cs'?cs:en;
  const head='ws-fd-head-'+useId().replace(/:/g,'');
  const actors:{id:Actor;x:number;y:number;w:number;h:number;name:string;sub:string}[]=[
   {id:'you',x:0,y:150,w:130,h:100,name:t('Vy','You'),sub:''},
   {id:'app',x:268,y:135,w:176,h:130,name:t('Aplikace','Application'),sub:t('Lektorský portál','Lecturer portal')},
   {id:'model',x:562,y:14,w:158,h:104,name:t('Mozek','Brain'),sub:'model (Qwen)'},
-  ...(noTool?[]:[{id:'tool' as Actor,x:562,y:282,w:158,h:104,name:t('Nástroj','Tool'),sub:'get_weather'}]),
+  ...(noTool?[]:[{id:'tool' as Actor,x:562,y:282,w:158,h:104,name:t('Nástroj','Tool'),sub:tool}]),
  ];
  const by=Object.fromEntries(actors.map(a=>[a.id,a])) as Record<Actor,typeof actors[number]>;
  const edge=(a:Actor,b:Actor)=>{const A=by[a],B=by[b];const ax=A.x+A.w/2,ay=A.y+A.h/2,bx=B.x+B.w/2,by2=B.y+B.h/2;const clip=(P:typeof A,fx:number,fy:number,tx:number,ty:number)=>{const dx=tx-fx,dy=ty-fy;const k=Math.min(Math.abs(dx)>0?(P.w/2+6)/Math.abs(dx):Infinity,Math.abs(dy)>0?(P.h/2+6)/Math.abs(dy):Infinity);return [fx+dx*k,fy+dy*k] as const;};const [x1,y1]=clip(A,ax,ay,bx,by2);const [x2,y2]=clip(B,bx,by2,ax,ay);return {x1,y1,x2,y2};};

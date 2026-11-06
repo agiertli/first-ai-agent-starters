@@ -24,7 +24,7 @@ function eventLabel(e: TraceEvent, lang: Language) {
 }
 
 /** A compact live layout; the detailed teaching diagram remains in chapter two. */
-export function RunDiagram({ lang, phase, chat }: { lang: Language; phase: Phase; tool?: string; chat: boolean }) {
+export function RunDiagram({ lang, phase, tool, chat }: { lang: Language; phase: Phase; tool?: string; chat: boolean }) {
   const stage: Record<Phase, { from: Actor | null; to: Actor | null; also?: Actor[]; loopback?: boolean }> = {
     idle: { from: null, to: null }, error: { from: null, to: null }, stopped: { from: null, to: null },
     goal: { from: 'you', to: 'app' }, thinking: { from: 'app', to: 'model' }, tool: { from: 'model', to: 'app' },
@@ -32,7 +32,7 @@ export function RunDiagram({ lang, phase, chat }: { lang: Language; phase: Phase
     context_updated: { from: 'app', to: null, loopback: true }, tool_denied: { from: 'app', to: null },
     answer: { from: 'app', to: 'you', also: ['model'] },
   };
-  return <AgentStage lang={lang} noTool={chat} {...stage[phase]} />;
+  return <AgentStage lang={lang} noTool={chat} tool={tool} {...stage[phase]} />;
 }
 
 export function LiveRunView({ events, lang, chat, task, runId, running, runControl, stage = false }: {
