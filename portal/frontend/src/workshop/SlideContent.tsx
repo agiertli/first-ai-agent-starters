@@ -1,10 +1,33 @@
+import { useState } from 'react';
 import { type Language } from './content';
 import { programme, type Slide } from './presentationContent';
-import { AssistantTeam, ContextDesk, LoopStory } from './FriendlyDiagrams';
+import { ContextDesk, LoopStory } from './FriendlyDiagrams';
 import { Agenda, Brief, Build, Compare, DataPath, Decision, Extensions, Introductions, Permissions, Routes, Save, Test, PromptCard, WeatherSteps } from './ConceptSlides';
 import { Timer } from './WorkshopTimer';
 import { publicAsset } from './runtime';
 import type { PracticeStep } from './practiceContent';
+
+function House({lang}:{lang:Language}) {
+ const [floor,setFloor]=useState(0); const t=(cs:string,en:string)=>lang==='cs'?cs:en;
+ const layers=[
+ [t('Základy: potřeba člověka','Foundation: a human need'),t('Co řeším, pro koho a proč.','What I need to solve, for whom and why.')],
+ [t('Podklady a instrukce','Sources and instructions'),t('Informace a pravidla, které aplikace předá modelu.','Information and rules the app supplies to the model.')],
+ [t('Model a nástroje','Model and tools'),t('Model navrhne krok. Nástroj získá data nebo provede akci.','The model proposes a step. A tool gets data or performs an action.')],
+ [t('Řídicí aplikace','The controlling application'),t('Propojí části, opakuje kroky a hlídá oprávnění i konec.','Connects the parts, repeats steps and enforces permissions and stopping.')],
+ ];
+ return <div className="ws-house-slide"><div className="ws-house-cutaway" role="group" aria-label={t('Dům agenta: vyberte část','Agent house: choose a part')}>
+  <svg viewBox="0 0 600 480" aria-hidden="true" className="ws-house-building">
+   <path d="M445 65 V27 H478 V84" className="ws-house-wall"/>
+   <path d="M35 108 L300 12 L565 108 Z" className="ws-house-roof"/>
+   <path d="M55 108 V434 H545 V108" className="ws-house-wall"/>
+   <path d="M20 354 H580" className="ws-house-ground"/>
+   <path d="M40 444 H560 M40 456 H560" className="ws-house-foundation"/>
+   {[0,1,2].map(i=><g key={i} transform={`translate(0 ${i*80})`}><path d="M55 194 H425 M515 194 H545" className="ws-house-floor"/><path d="M425 194 h18 v-16 h18 v-16 h18 v-16 h18 v-16 h18 v-16" className="ws-house-stairs"/></g>)}
+   <g className="ws-house-marker" style={{transform:`translate(530px, ${391-floor*80}px)`}}><circle cy="-11" r="6"/><path d="M0 -3 V12 M-8 2 H8 M0 12 L-7 22 M0 12 L7 22"/></g>
+  </svg>
+  <div className="ws-house-rooms">{[3,2,1,0].map(i=><button key={i} aria-pressed={floor===i} onClick={()=>setFloor(i)}><span aria-hidden="true">{i===0?'↓':i}</span>{layers[i][0]}</button>)}</div>
+ </div><div className="ws-house-definition"><p aria-live="polite">{layers[floor][1]}</p><button onClick={()=>setFloor((floor+1)%4)}>{floor===3?t('Zpět k základům','Back to the foundations'):t('Další část domu ↑','Next floor ↑')}</button><small>{t('Schodiště propojuje části. Řídicí aplikace je používá podle potřeby a oprávnění, ne v pevném pořadí.','The stairs connect the parts. The app uses them as needed and permitted, not in a fixed order.')}</small></div></div>;
+}
 
 export function SlideContent({slide,lang,onDemo,onPractice}:{slide:Slide;lang:Language;onDemo:(demo:'weather'|'presentation')=>void;onPractice:(step:PracticeStep)=>void}) {
  const t=(cs:string,en:string)=>lang==='cs'?cs:en;
@@ -13,7 +36,7 @@ export function SlideContent({slide,lang,onDemo,onPractice}:{slide:Slide;lang:La
  case 'agenda':return <Agenda lang={lang}/>;
  case 'introductions':return <Introductions lang={lang}/>;
  case 'compare':return <Compare lang={lang}/>;
- case 'house':return <AssistantTeam lang={lang}/>;
+ case 'house':return <House lang={lang}/>;
  case 'loop':return <LoopStory lang={lang}/>;
  case 'context':return <><ContextDesk lang={lang}/><p className="ws-slide-footnote">{t('Kontext má omezenou kapacitu. Paměť mezi chaty je samostatná funkce aplikace.','Context has limited capacity. Memory between chats is a separate application feature.')}</p></>;
  case 'decision':return <Decision lang={lang}/>;
