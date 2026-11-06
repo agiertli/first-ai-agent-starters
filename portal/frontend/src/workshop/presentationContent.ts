@@ -1,5 +1,6 @@
 import { w, type Words } from './content';
 export type SlideKind = 'opening' | 'agenda' | 'introductions' | 'compare' | 'house' | 'loop' | 'context' | 'decision' | 'weather' | 'brief' | 'break' | 'data' | 'permissions' | 'extensions' | 'presentation' | 'routes' | 'build' | 'test' | 'save' | 'closing';
+export const slideStepCount = (id: SlideKind) => id === 'house' ? 4 : id === 'loop' ? 8 : 1;
 export interface Slide { id: SlideKind; chapter: number; title: Words; lead: Words; notes: Words; }
 export const programme = [
  { title:w('Úvod a očekávání','Welcome and expectations'), minutes:10 },

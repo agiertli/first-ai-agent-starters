@@ -41,6 +41,11 @@ Do not edit minified files in `docs/assets/` by hand.
 The two top-level areas are **Presentation** and **Exercises**. Presentation has
 20 concise slides covering the nine timed sections (180 minutes). Arrow keys
 and previous/next buttons move between slides; Programme jumps to a section.
+On the house and agent-loop slides, left/right arrows, Page Up/Down and the
+bottom arrow buttons go through the steps before changing slides. Going back
+to either slide starts at its last step. The current step is included in the
+URL and preserved when switching language or opening Exercises. Keyboard
+navigation is suspended in dialogs, form controls and Exercises.
 The default language is Czech, with English available from the header.
 
 Exercises is a directly shareable page:

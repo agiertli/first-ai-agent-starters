@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { type Language } from './content';
 import { programme, type Slide } from './presentationContent';
 import { ContextDesk, LoopStory } from './FriendlyDiagrams';
@@ -7,8 +6,8 @@ import { Timer } from './WorkshopTimer';
 import { publicAsset } from './runtime';
 import type { PracticeStep } from './practiceContent';
 
-function House({lang}:{lang:Language}) {
- const [floor,setFloor]=useState(0); const t=(cs:string,en:string)=>lang==='cs'?cs:en;
+function House({lang,floor,setFloor}:{lang:Language;floor:number;setFloor:(floor:number)=>void}) {
+ const t=(cs:string,en:string)=>lang==='cs'?cs:en;
  const layers=[
  [t('Základy: potřeba člověka','Foundation: a human need'),t('Co řeším, pro koho a proč.','What I need to solve, for whom and why.')],
  [t('Podklady a instrukce','Sources and instructions'),t('Informace a pravidla, které aplikace předá modelu.','Information and rules the app supplies to the model.')],
@@ -29,15 +28,15 @@ function House({lang}:{lang:Language}) {
  </div><div className="ws-house-definition"><p aria-live="polite">{layers[floor][1]}</p><button onClick={()=>setFloor((floor+1)%4)}>{floor===3?t('Zpět k základům','Back to the foundations'):t('Další část domu ↑','Next floor ↑')}</button><small>{t('Schodiště propojuje části. Řídicí aplikace je používá podle potřeby a oprávnění, ne v pevném pořadí.','The stairs connect the parts. The app uses them as needed and permitted, not in a fixed order.')}</small></div></div>;
 }
 
-export function SlideContent({slide,lang,onDemo,onPractice}:{slide:Slide;lang:Language;onDemo:(demo:'weather'|'presentation')=>void;onPractice:(step:PracticeStep)=>void}) {
+export function SlideContent({slide,lang,step,onStepChange,onDemo,onPractice}:{slide:Slide;lang:Language;step:number;onStepChange:(step:number)=>void;onDemo:(demo:'weather'|'presentation')=>void;onPractice:(step:PracticeStep)=>void}) {
  const t=(cs:string,en:string)=>lang==='cs'?cs:en;
  switch(slide.id){
  case 'opening':return <><div className="ws-opening-outcome"><span aria-hidden="true">↻</span><p>{t('Vlastní zadání. Skutečný výstup. Ověřené hranice.','Your brief. A real output. Tested boundaries.')}</p></div><p className="ws-slide-footnote">{t('180 minut · Anton a Ondra · pracujeme ve vašich aplikacích','180 minutes · Anton and Ondra · work in your own applications')}</p></>;
  case 'agenda':return <Agenda lang={lang}/>;
  case 'introductions':return <Introductions lang={lang}/>;
  case 'compare':return <Compare lang={lang}/>;
- case 'house':return <House lang={lang}/>;
- case 'loop':return <LoopStory lang={lang}/>;
+ case 'house':return <House lang={lang} floor={step} setFloor={onStepChange}/>;
+ case 'loop':return <LoopStory lang={lang} step={step} setStep={onStepChange}/>;
  case 'context':return <><ContextDesk lang={lang}/><p className="ws-slide-footnote">{t('Kontext má omezenou kapacitu. Paměť mezi chaty je samostatná funkce aplikace.','Context has limited capacity. Memory between chats is a separate application feature.')}</p></>;
  case 'decision':return <Decision lang={lang}/>;
  case 'weather':return <><WeatherSteps lang={lang}/><button className="ws-primary ws-demo-launch" onClick={()=>onDemo('weather')}>{t('Otevřít živou ukázku','Open live demo')} ↗</button><p className="ws-slide-footnote">{t('Sledujte zdroj, místo a čas. Plynulá odpověď sama není důkaz.','Check source, location and time. A fluent answer is not evidence.')}</p></>;

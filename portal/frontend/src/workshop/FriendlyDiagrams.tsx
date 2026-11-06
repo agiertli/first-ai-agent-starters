@@ -1,4 +1,4 @@
-import { useId, useState, type ReactNode } from 'react';
+import { useId, type ReactNode } from 'react';
 import { type Language } from './content';
 
 // Plain-language pictures for the two teaching slides ("What an agent needs", "How an agent works").
@@ -40,9 +40,8 @@ export function AgentStage({lang,from,to,also=[],loopback=false,noTool=false,too
  </svg>;
 }
 
-export function LoopStory({lang}:{lang:Language}) {
+export function LoopStory({lang,step,setStep}:{lang:Language;step:number;setStep:(step:number)=>void}) {
  const t=(cs:string,en:string)=>lang==='cs'?cs:en;
- const [step,setStep]=useState(0);
  const steps:Step[]=[
   {from:'you',to:'app',round:0,speaker:t('Vy','You'),quote:t('„Mám dnes jít na procházku v Řevnicích?“','“Should I go for a walk in Řevnice today?”'),caption:t('Řeknete aplikaci, co chcete. Aplikace k tomu přidá pokyny, podklady a seznam nástrojů, které smí použít.','You tell the application what you want. It adds instructions, papers and the list of tools it may use.')},
   {from:'app',to:'model',round:1,speaker:t('Aplikace','Application'),quote:t('„Uživatel se ptá na procházku. Tady jsou pokyny a nástroje. Co dál?“','“The user asks about a walk. Here are the instructions and tools. What next?”'),caption:t('Aplikace se zeptá mozku (modelu), co dál. Mozek vidí jen to, co mu aplikace předá.','The application asks the brain (the model) what to do next. The brain sees only what the application hands over.')},
