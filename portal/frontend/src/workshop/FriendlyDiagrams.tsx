@@ -16,7 +16,7 @@ export function AssistantTeam({lang}:{lang:Language}) {
  const [part,setPart]=useState(0);
  const parts=[
   {name:t('Vy a váš úkol','You and your task'),term:t('cíl','goal'),text:t('Co potřebujete, pro koho a proč. Bez zadání asistent neví, kde začít.','What you need, for whom and why. Without a task the assistant does not know where to start.')},
-  {name:t('Podklady a pokyny','Papers and instructions'),term:'context',text:t('Co asistentovi položíte na stůl: dokumenty, pravidla a dosavadní rozhovor. Co na stole není, to asistent neví.','What you put on the assistant’s desk: documents, rules and the conversation so far. What is not on the desk, the assistant does not know.')},
+  {name:t('Podklady a pokyny','Papers and instructions'),term:'context',text:t('Co asistentovi položíte na stůl: dokumenty, pravidla a dosavadní rozhovor. Vaše konkrétní podklady model nemá k dispozici, dokud mu je aplikace nezpřístupní.','What you put on the assistant’s desk: documents, rules and the conversation so far. Your specific materials are not available to the model until the application provides them.')},
   {name:t('Mozek a ruce','Brain and hands'),term:t('model · nástroje (tools)','model · tools'),text:t('Mozek (model) jen navrhne další krok. Ruce (nástroje) pak umějí něco zjistit nebo udělat, třeba najít počasí nebo přečíst e-mail.','The brain (model) only suggests the next step. The hands (tools) can then look something up or do something, such as finding the weather or reading an email.')},
   {name:t('Vedoucí kanceláře','The office manager'),term:t('aplikace (ChatGPT, Claude…)','the application (ChatGPT, Claude…)'),text:t('Aplikace předá asistentovi podklady, pustí ho k nástrojům jen s povolením, opakuje kroky a pozná, kdy skončit.','The application hands the assistant the papers, lets them use tools only with permission, repeats the steps and knows when to stop.')},
  ];
@@ -51,9 +51,9 @@ export function AgentStage({lang,from,to,also=[],loopback=false,noTool=false}:{l
  const head='ws-fd-head-'+useId().replace(/:/g,'');
  const actors:{id:Actor;x:number;y:number;w:number;h:number;name:string;sub:string}[]=[
   {id:'you',x:0,y:150,w:130,h:100,name:t('Vy','You'),sub:''},
-  {id:'app',x:268,y:135,w:176,h:130,name:t('Aplikace','Application'),sub:'ChatGPT · Claude'},
-  {id:'model',x:562,y:14,w:158,h:104,name:t('Mozek','Brain'),sub:'model (AI)'},
-  ...(noTool?[]:[{id:'tool' as Actor,x:562,y:282,w:158,h:104,name:t('Nástroj','Tool'),sub:t('např. počasí','e.g. weather')}]),
+  {id:'app',x:268,y:135,w:176,h:130,name:t('Aplikace','Application'),sub:t('Lektorský portál','Lecturer portal')},
+  {id:'model',x:562,y:14,w:158,h:104,name:t('Mozek','Brain'),sub:'model (Qwen)'},
+  ...(noTool?[]:[{id:'tool' as Actor,x:562,y:282,w:158,h:104,name:t('Nástroj','Tool'),sub:'get_weather'}]),
  ];
  const by=Object.fromEntries(actors.map(a=>[a.id,a])) as Record<Actor,typeof actors[number]>;
  const edge=(a:Actor,b:Actor)=>{const A=by[a],B=by[b];const ax=A.x+A.w/2,ay=A.y+A.h/2,bx=B.x+B.w/2,by2=B.y+B.h/2;const clip=(P:typeof A,fx:number,fy:number,tx:number,ty:number)=>{const dx=tx-fx,dy=ty-fy;const k=Math.min(Math.abs(dx)>0?(P.w/2+6)/Math.abs(dx):Infinity,Math.abs(dy)>0?(P.h/2+6)/Math.abs(dy):Infinity);return [fx+dx*k,fy+dy*k] as const;};const [x1,y1]=clip(A,ax,ay,bx,by2);const [x2,y2]=clip(B,bx,by2,ax,ay);return {x1,y1,x2,y2};};

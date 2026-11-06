@@ -108,12 +108,21 @@ export function Extensions({lang}: {lang: Language}) {
 export function DataPath({lang}: {lang: Language}) {
  const t = tt(lang);
  return <div className="ws-cv-data">
-  <div className="ws-cv-route" aria-hidden="true">
-   {[[<PersonIcon key="icon"/>, t('Vy', 'You')], [<ManagerIcon key="icon"/>, t('Aplikace', 'The app')], [<CloudIcon key="icon"/>, t('Poskytovatel modelu', 'Model provider')], [<PlugIcon key="icon"/>, t('Připojená služba', 'Connected service')]].map(([icon, name], i) => <Fragment key={i}>{i > 0 && <b>→</b>}<div><span>{icon}</span>{name}</div></Fragment>)}
+  <div className="ws-cv-route-branches" aria-hidden="true">
+   <div className="ws-cv-branch-left">
+    <div><span><PersonIcon/></span>{t('Vy', 'You')}</div>
+    <b>→</b>
+    <div className="ws-cv-branch-center"><span><ManagerIcon/></span>{t('Aplikace', 'The app')}<small>{t('Lektorský portál', 'Lecturer portal')}</small></div>
+   </div>
+   <div className="ws-cv-branch-right">
+    <div className="ws-cv-branch-arm"><b>→</b><div><span><CloudIcon/></span>{t('Model', 'Model')}<small>Qwen</small></div></div>
+    <div className="ws-cv-branch-arm"><b>→</b><div><span><PlugIcon/></span>{t('Připojená služba', 'Connected service')}<small>Open-Meteo</small></div></div>
+   </div>
   </div>
+  <p className="ws-cv-branch-note">{t('Aplikace komunikuje s modelem a službami zvlášť. Vy si vybíráte, komu která data odesíláte.', 'The application talks to the model and services separately. You choose who receives which data.')}</p>
   <div className="ws-cv-grid three">
    <Tile icon={<PapersIcon/>} title={t('Co odesílám?', 'What am I sending?')}>{t('Vlastní dokumenty použijte, pokud je smíte zpracovat v této službě. Při nejistotě je anonymizujte.', 'Use your own documents if you are allowed to process them in this service. If unsure, anonymise them.')}</Tile>
-   <Tile icon={<SendIcon/>} title={t('Komu?', 'To whom?')}>{t('Aplikaci, poskytovateli modelu a případně připojené službě.', 'To the application, model provider and any connected service.')}</Tile>
+   <Tile icon={<SendIcon/>} title={t('Komu?', 'To whom?')}>{t('Zvlášť modelu a zvlášť připojené službě.', 'Separately to the model and separately to the connected service.')}</Tile>
    <Tile icon={<ShieldIcon/>} title={t('Za jakých podmínek?', 'On what terms?')}>{t('Ověřte nastavení a pravidla služby. Placený účet není záruka soukromí.', 'Check service settings and policies. A paid account is not a privacy guarantee.')}</Tile>
   </div>
  </div>;
