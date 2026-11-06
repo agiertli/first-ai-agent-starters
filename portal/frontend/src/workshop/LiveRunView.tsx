@@ -1,11 +1,11 @@
 import { useEffect, useId, useReducer, useRef, useState, type ReactNode } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import { captions, type Phase } from './diagramContent';
 import { DIAGRAM_EVENT_TYPES, initialPlayback, playbackReducer } from './diagramPlayback';
 import { w, type Language } from './content';
 import type { TraceEvent } from './model';
 import { RequestStatus } from './RequestStatus';
+import { AgentStage, type Actor } from './FriendlyDiagrams';
 
 function eventLabel(e: TraceEvent, lang: Language) {
   const name = e.name === 'read_materials' ? w('Přečíst podklady', 'Read materials')[lang] : e.name === 'get_weather' ? w('Zjistit počasí', 'Get weather')[lang] : e.name;
@@ -25,35 +25,14 @@ function eventLabel(e: TraceEvent, lang: Language) {
 
 /** A compact live layout; the detailed teaching diagram remains in chapter two. */
 export function RunDiagram({ lang, phase, tool, chat }: { lang: Language; phase: Phase; tool?: string; chat: boolean }) {
-  const marker = useId().replace(/:/g, '');
-  const reduced = useReducedMotion();
-  const t = (cs: string, en: string) => lang === 'cs' ? cs : en;
-  const active = (...phases: Phase[]) => phases.includes(phase);
-  const edge = (d: string, on: boolean) => <motion.path d={d} fill="none" stroke={on ? '#465bc4' : '#9aa8bf'} strokeWidth={on ? 3 : 1.8} markerEnd={`url(#${marker})`} strokeDasharray={on ? '7 5' : undefined} animate={on && !reduced ? { strokeDashoffset: [0, -24] } : { strokeDashoffset: 0 }} transition={{ duration: 1.5, repeat: on && !reduced ? Infinity : 0, ease: 'linear' }} />;
-  const node = (x: number, y: number, title: string, subtitle: string, on: boolean) => <g className={`ws-diagram-node${on ? ' active' : ''}`}><rect x={x} y={y} width="124" height="76" rx="12" /><text x={x + 62} y={y + 31} textAnchor="middle" className="ws-run-node-title">{title}</text><text x={x + 62} y={y + 56} textAnchor="middle" className="ws-run-node-sub">{subtitle}</text></g>;
-  return <svg className="ws-run-svg" viewBox="0 0 660 310" role="img" aria-label={t('Člověk zadává cíl aplikaci. Aplikace volá model, provádí povolené nástroje a vrací jejich výsledky do kontextu modelu.', 'The person gives the application a goal. The application calls the model, executes permitted tools and adds results to model context.')}>
-    <defs><marker id={marker} markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto-start-reverse"><path d="M0 0L7 3.5L0 7" fill="#687ab5" /></marker></defs>
-    {edge('M138 145H213', active('goal'))}{edge('M213 175H138', active('answer'))}
-    <text x="175" y="134" textAnchor="middle" className="ws-run-node-sub">{t('cíl', 'goal')}</text><text x="175" y="197" textAnchor="middle" className="ws-run-node-sub">{t('odpověď', 'answer')}</text>
-    {edge('M443 60H522', active('thinking'))}{edge('M522 91H443', active('tool', 'answer'))}
-    <text x="482" y="47" textAnchor="middle" className="ws-run-node-sub">{t('kontext', 'context')}</text><text x="482" y="114" textAnchor="middle" className="ws-run-node-sub">{t('další krok', 'next step')}</text>
-    {!chat && <>{edge('M443 223H522', active('tool_executing'))}{edge('M522 254H443', active('result'))}<text x="482" y="210" textAnchor="middle" className="ws-run-node-sub">{t('spuštění', 'execute')}</text><text x="482" y="278" textAnchor="middle" className="ws-run-node-sub">{t('výsledek', 'result')}</text></>}
-    {node(14, 122, t('Člověk', 'Person'), t('cíl a hranice', 'goal & limits'), active('goal', 'answer'))}
-    <g className={`ws-diagram-node${active('goal', 'tool', 'tool_executing', 'result', 'context_updated', 'tool_denied', 'error') ? ' active' : ''}`}>
-      <rect x="213" y="18" width="230" height="274" rx="16" />
-      <text x="328" y="53" textAnchor="middle" className="ws-run-node-title">{t('Agentní aplikace', 'Agent application')}</text>
-      <text x="328" y="79" textAnchor="middle" className="ws-run-node-sub">{t('řídí běh · harness', 'manages the run · harness')}</text>
-      <line x1="231" y1="97" x2="425" y2="97" stroke="#ccd5e5" />
-      <text x="328" y="126" textAnchor="middle" className="ws-run-node-sub">{t('kontext a výsledky', 'context & results')}</text>
-      <text x="328" y="153" textAnchor="middle" className="ws-run-node-sub">{t('oprávnění a nástroje', 'permissions & tools')}</text>
-      <text x="328" y="180" textAnchor="middle" className="ws-run-node-sub">{t('limity a ukončení', 'limits & stopping')}</text>
-      <rect x="229" y="201" width="198" height="72" rx="8" style={{ fill: active('context_updated', 'thinking') ? '#d9d3f5' : '#f1f3f9' }} />
-      <text x="328" y="229" textAnchor="middle" className="ws-run-node-sub">{t('výsledek → kontext', 'result → context')}</text>
-      <text x="328" y="254" textAnchor="middle" className="ws-run-node-sub">{t('↻ další rozhodnutí', '↻ next decision')}</text>
-    </g>
-    {node(522, 36, t('Model', 'Model'), t('volí další krok', 'chooses a step'), active('thinking', 'tool', 'answer'))}
-    {!chat ? node(522, 200, t('Nástroj', 'Tool'), tool === 'read_materials' ? t('podklady', 'materials') : tool === 'get_weather' ? t('počasí', 'weather') : t('data / operace', 'data / action'), active('tool_executing', 'result')) : <text x="584" y="237" textAnchor="middle" className="ws-run-node-sub">{t('Bez nástrojů', 'No tools')}</text>}
-  </svg>;
+  const stage: Record<Phase, { from: Actor | null; to: Actor | null; also?: Actor[]; loopback?: boolean }> = {
+    idle: { from: null, to: null }, error: { from: null, to: null }, stopped: { from: null, to: null },
+    goal: { from: 'you', to: 'app' }, thinking: { from: 'app', to: 'model' }, tool: { from: 'model', to: 'app' },
+    tool_executing: { from: 'app', to: 'tool' }, result: { from: 'tool', to: 'app' },
+    context_updated: { from: 'app', to: null, loopback: true }, tool_denied: { from: 'app', to: null },
+    answer: { from: 'app', to: 'you', also: ['model'] },
+  };
+  return <AgentStage lang={lang} noTool={chat} tool={tool} {...stage[phase]} />;
 }
 
 export function LiveRunView({ events, lang, chat, task, runId, running, runControl, stage = false }: {
