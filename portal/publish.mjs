@@ -22,7 +22,10 @@ async function inspect(folder) {
   }
 }
 await inspect(source);
-await rm(target, { recursive: true });
+// Review comments link to these screenshots; publishing must not erase them.
+for (const item of await readdir(target)) {
+  if (item !== 'pr-review-screenshots') await rm(join(target, item), { recursive: true });
+}
 await mkdir(target, { recursive: true });
 await cp(source, target, { recursive: true });
 await writeFile(join(target, '.workshop-site'), 'Generated static workshop. Source: portal/\n');

@@ -16,14 +16,14 @@ export type Actor='you'|'app'|'model'|'tool';
 interface Step {from:Actor;to:Actor|null;round:0|1|2;speaker:string;quote:string;caption:string}
 
 // The application sits in the middle: you, the model and the tool only ever talk to it. The arrow shows which way one message travels.
-export function AgentStage({lang,from,to,also=[],loopback=false,noTool=false,tool='get_weather'}:{lang:Language;from:Actor|null;to:Actor|null;also?:Actor[];loopback?:boolean;noTool?:boolean;tool?:string}) {
+export function AgentStage({lang,from,to,also=[],loopback=false,noTool=false,tool,model}:{lang:Language;from:Actor|null;to:Actor|null;also?:Actor[];loopback?:boolean;noTool?:boolean;tool?:string;model?:string}) {
  const t=(cs:string,en:string)=>lang==='cs'?cs:en;
  const head='ws-fd-head-'+useId().replace(/:/g,'');
  const actors:{id:Actor;x:number;y:number;w:number;h:number;name:string;sub:string}[]=[
   {id:'you',x:0,y:150,w:130,h:100,name:t('Vy','You'),sub:''},
   {id:'app',x:268,y:135,w:176,h:130,name:t('Aplikace','Application'),sub:t('Lektorský portál','Lecturer portal')},
-  {id:'model',x:562,y:14,w:158,h:104,name:t('Mozek','Brain'),sub:'model (Qwen)'},
-  ...(noTool?[]:[{id:'tool' as Actor,x:562,y:282,w:158,h:104,name:t('Nástroj','Tool'),sub:tool}]),
+  {id:'model',x:562,y:14,w:158,h:104,name:t('Mozek','Brain'),sub:model || 'model (AI)'},
+  ...(noTool?[]:[{id:'tool' as Actor,x:562,y:282,w:158,h:104,name:t('Nástroj','Tool'),sub:tool || t('podle úkolu','as needed')}]),
  ];
  const by=Object.fromEntries(actors.map(a=>[a.id,a])) as Record<Actor,typeof actors[number]>;
  const edge=(a:Actor,b:Actor)=>{const A=by[a],B=by[b];const ax=A.x+A.w/2,ay=A.y+A.h/2,bx=B.x+B.w/2,by2=B.y+B.h/2;const clip=(P:typeof A,fx:number,fy:number,tx:number,ty:number)=>{const dx=tx-fx,dy=ty-fy;const k=Math.min(Math.abs(dx)>0?(P.w/2+6)/Math.abs(dx):Infinity,Math.abs(dy)>0?(P.h/2+6)/Math.abs(dy):Infinity);return [fx+dx*k,fy+dy*k] as const;};const [x1,y1]=clip(A,ax,ay,bx,by2);const [x2,y2]=clip(B,bx,by2,ax,ay);return {x1,y1,x2,y2};};
@@ -34,7 +34,7 @@ export function AgentStage({lang,from,to,also=[],loopback=false,noTool=false,too
   <defs><marker id={head} viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#315bce"/></marker></defs>
   {spokes.filter(([a,b])=>!(arrow&&((a===from&&b===to)||(a===to&&b===from)))).map(([a,b])=>{const e=edge(a,b);return <line key={a+b} x1={e.x1} y1={e.y1} x2={e.x2} y2={e.y2} className="ws-fd-spoke"/>;})}
   {arrow&&<line x1={arrow.x1} y1={arrow.y1} x2={arrow.x2} y2={arrow.y2} className="ws-fd-active-spoke" markerEnd={`url(#${head})`}/>}
-  {actors.map(a=><g key={a.id} className={`ws-fd-actor actor-${a.id}${lit(a.id)?' is-lit':''}`}><rect x={a.x} y={a.y} width={a.w} height={a.h} rx="14"/><text x={a.x+a.w/2} y={a.y+a.h/2+(a.sub?-2:8)} textAnchor="middle" className="ws-fd-actor-name">{a.name}</text>{a.sub&&<text x={a.x+a.w/2} y={a.y+a.h/2+24} textAnchor="middle" className="ws-fd-actor-sub">{a.sub}</text>}</g>)}
+  {actors.map(a=><g key={a.id} className={`ws-fd-actor actor-${a.id}${lit(a.id)?' is-lit':''}`}><rect x={a.x} y={a.y} width={a.w} height={a.h} rx="14"/><text x={a.x+a.w/2} y={a.y+a.h/2+(a.sub?-2:8)} textAnchor="middle" className="ws-fd-actor-name">{a.name}</text>{a.sub&&<text x={a.x+a.w/2} y={a.y+a.h/2+24} textAnchor="middle" className="ws-fd-actor-sub" aria-label={a.sub}><title>{a.sub}</title>{a.sub.length>16?a.sub.slice(0,15)+'…':a.sub}</text>}</g>)}
   {loopback&&<g className="ws-fd-loopback"><path d="M318 135 C 318 60, 420 60, 435 120" fill="none" markerEnd={`url(#${head})`}/></g>}
   <text x="356" y="300" textAnchor="middle" className="ws-fd-hub-note">{t('Všechno vede přes aplikaci','Everything goes through the application')}</text>
  </svg>;
@@ -56,7 +56,7 @@ export function LoopStory({lang}:{lang:Language}) {
  const s=steps[step];
  const roundLabel=s.round===0?t('Zadání','The request'):t(`Kolo ${s.round} ze 2`,`Round ${s.round} of 2`);
  return <div className="ws-fd-loop">
-  <AgentStage lang={lang} from={s.from} to={s.to} loopback={s.to===null}/>
+  <AgentStage lang={lang} from={s.from} to={s.to} loopback={s.to===null} tool="get_weather"/>
   <div className="ws-fd-panel">
    <div className="ws-fd-meta"><span>{step+1} / {steps.length}</span><span className="ws-fd-round">{roundLabel}</span></div>
    <blockquote className={`ws-fd-quote speaker-${s.from}`}><cite>{s.speaker}</cite>{s.quote}</blockquote>

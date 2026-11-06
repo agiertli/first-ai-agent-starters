@@ -66,6 +66,16 @@ continue while switching to Exercises, but reset when leaving their slide.
 **Facilitator** contains slide notes and the one-page Czech/English guide.
 Notes and connection settings are also visible on the projector.
 The public PDFs must be regenerated when `workshop-content/runbook.json` changes.
+From `portal/`, with Python packages `reportlab` and `pypdf` installed, run:
+
+```sh
+python3 build_facilitator_runbook.py --font /path/to/DejaVuSans.ttf
+```
+
+This rebuilds both single-page A4 guides in `frontend/public/runbook/` from the
+shared Czech/English text. Supply a Unicode TrueType font supporting Czech,
+render both PDFs for a visual check, then run `npm run stage` from `frontend/`.
+
 `presentationContent.ts` holds the slide sequence and notes; `SlideContent.tsx`
 renders the visuals; `workshop-content/practice-prompts.json` is the source for
 copyable exercises. Generated ZIPs and `starterCatalog.json` come from the root
