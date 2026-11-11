@@ -17,7 +17,7 @@ export async function runAdvancedLesson(
   input: AdvancedInput, connection: BrowserConnection, emit: (event: SSEEvent) => void,
   diagnostic: (status: RequestDiagnostic) => void, callerSignal: AbortSignal, fetcher: typeof fetch = fetch,
 ): Promise<void> {
-  const signal = AbortSignal.any([callerSignal, AbortSignal.timeout(180_000)]);
+  const signal = AbortSignal.any([callerSignal, AbortSignal.timeout(input.lesson === 5 ? 480_000 : 180_000)]);
   const privateValues = [input.prompt];
   const runId = crypto.randomUUID();
   let iteration = 0;
@@ -33,7 +33,7 @@ export async function runAdvancedLesson(
       emit({ type: 'llm_request', messages: payload.messages, tools, purpose, parameters: payload, transport: 'Exact JSON body sent by browser fetch · Authorization header excluded' });
       emit({ type: 'llm_thinking' });
       let usage: ModelUsage | undefined;
-      const raw = await requestBrowserModel(cfg, payload, ++iteration, runId, signal, diagnostic, privateValues, fetcher, MODEL_REQUEST_TIMEOUT_MS, value => { usage = value; }, input.lesson === 5);
+      const raw = await requestBrowserModel(cfg, payload, ++iteration, runId, signal, diagnostic, privateValues, fetcher, input.lesson === 5 && (purpose === 'context summary' || purpose === 'unmanaged — threshold ignored') ? 300_000 : MODEL_REQUEST_TIMEOUT_MS, value => { usage = value; }, input.lesson === 5);
       const calls = raw.tool_calls || [];
       const message: ModelMessage = { role: 'assistant', content: raw.content ?? null, ...(calls.length ? { tool_calls: calls } : {}) };
       if (calls.length) emit({ type: 'llm_tool_selection', tool_calls: calls.map(c => {
@@ -91,11 +91,11 @@ export async function runAdvancedLesson(
     emit({ type: 'done' });
   } catch (error) {
     if (callerSignal.aborted) return;
-    if (error instanceof ModelRequestError) emit({ type: 'error', content: modelFailureMessage(error.diagnostic, input.language === 'cs'), status_code: error.diagnostic.httpStatus, details: error.diagnostic.error?.message });
+    if (error instanceof ModelRequestError) emit({ type: 'error', content: input.lesson === 5 && error.diagnostic.kind === 'run_timeout' ? t('Vypršel celkový limit 8 minut pro kontextový experiment.', 'Eight-minute context experiment limit reached.') : modelFailureMessage(error.diagnostic, input.language === 'cs'), status_code: error.diagnostic.httpStatus, details: error.diagnostic.error?.message });
     else {
       const safe = safeException(error, [connection.apiKey, ...privateValues]);
       console.error('[workshop:advanced] failed', safe);
-      emit({ type: 'error', content: signal.aborted ? t('Vypršel tříminutový limit běhu.', 'Three-minute run limit reached.') : safe.message });
+      emit({ type: 'error', content: signal.aborted ? t('Vypršel celkový časový limit běhu.', 'Overall run time limit reached.') : safe.message });
     }
   }
 }

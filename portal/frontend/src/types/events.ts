@@ -28,6 +28,7 @@ export type SSEEvent =
   | { type: "context_overflow"; message_count: number; estimated_tokens: number; limit: number }
   | { type: "context_compaction"; before_count: number; after_count: number; before_tokens?: number; after_tokens?: number; summary: string; measurement?: string }
   | { type: "context_measurement"; input_tokens: number; limit: number; output_tokens: number; source: string; phase: string }
+  | { type: "context_threshold"; input_tokens: number; limit: number; threshold: number }
   | { type: "context_compacting"; input_tokens: number; limit: number }
   | { type: "context_error"; error: string }
   | { type: "schema_attached"; schema: Record<string, unknown> }

@@ -81,11 +81,17 @@ Requests go directly to the configured model, and weather to Open-Meteo. The
 request inspector shows actual payloads and provider-reported usage when present.
 The context lesson reads the actual token count and model limit from the configured
 server's `/tokenize` endpoint. After a real first exchange, exact repeated synthetic
-notes grow the next input beyond that measured limit. The unmanaged path submits
-this request and displays the actual provider error. The managed path intervenes
-before inference: it removes only exact synthetic duplicates, retains the original
-brief and actual reply, requests a live summary, measures the smaller context and
-continues with a recall question. The context walkthrough defaults to manual navigation. Click a named milestone,
+notes grow the next input to an application threshold of 90% of that window
+(or earlier if output headroom requires it). The unmanaged path ignores this
+threshold, processes the still-valid request, then grows beyond the real server
+limit and displays the actual provider error. The managed path instead requests
+a live summary of the FULL accumulated history, including every synthetic note.
+It first measures the summary request, including its instructions and output
+allowance, to ensure it still fits. No duplicates are removed before summarization.
+The application measures the smaller continuation and asks a recall question.
+Check both the original numbers and the wheelchair-access decision introduced
+only in the long notes: it must survive in the actual summary. This 90% threshold
+is a demo policy, not a universal rule for agent implementations. The context walkthrough defaults to manual navigation. Click a named milestone,
 Previous/Next, or use Left/Right while the walkthrough has focus. Each step shows
 one diagram snapshot and the matching explanation, measured counts or actual
 response. Error and compaction have their own selectable steps. Results arriving
@@ -95,8 +101,9 @@ trace is collapsed below. Navigation never invokes the API or pauses execution.
 
 The experiment requires a vLLM-compatible `/tokenize` endpoint with CORS. It stops
 explicitly if that endpoint or its count/limit is unavailable; it never invents a
-window or provider error. An 8 MB input cap, bounded calibration, 60-second request
-limits and three-minute run limit bound the demo. Both paths use the same synthetic
+window or provider error. An 8 MB input cap, bounded calibration, 60-second
+tokenizer limits, five-minute limits for full-history inference and an eight-minute run limit
+bound the context demo. Full-window inference can be slow; no retries occur. Both paths use the same synthetic
 note workload; normal model replies can change the exact request size slightly.
 The context trace shows the redacted provider error body; other experiments retain
 the existing body-free diagnostics. The original local Python lesson is unchanged.
@@ -144,7 +151,8 @@ on the inference server. There is no shared anonymous model proxy.
 
 The answer panel shows elapsed waiting time and connection status independently
 of diagram playback. Each model request has a 60-second limit; the complete run
-has a three-minute limit. Responses arrive as a whole, so an empty answer panel
+has a three-minute limit (the context lesson allows five minutes for full-history model requests
+and eight minutes overall; short calls retain the 60-second limit). Responses arrive as a whole, so an empty answer panel
 while waiting does not prove the model is stuck. The timer measures time used,
 not model completion progress. There are no automatic retries.
 

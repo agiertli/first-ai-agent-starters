@@ -1,5 +1,5 @@
 import type { SSEEvent } from '../types/events.ts';
-export type ContextStepKind = 'initial' | 'boundary' | 'compacting' | 'summary' | 'compacted' | 'answer' | 'rejected' | 'failure';
+export type ContextStepKind = 'initial' | 'threshold' | 'boundary' | 'compacting' | 'summary' | 'compacted' | 'answer' | 'rejected' | 'failure';
 export interface ContextStep { id: string; kind: ContextStepKind; end: number; event: SSEEvent }
 /** Stable snapshots: later network events never change an already selected step. */
 export function contextSteps(events: SSEEvent[]): ContextStep[] {
@@ -12,6 +12,7 @@ export function contextSteps(events: SSEEvent[]): ContextStep[] {
     if (event.type === 'llm_request') purpose = event.purpose || '';
     if (event.type === 'llm_response' && purpose === 'initial facts') add('initial', event, index);
     if (event.type === 'context_measurement' && event.input_tokens > event.limit) add('boundary', event, index);
+    if (event.type === 'context_threshold') add('threshold', event, index);
     if (event.type === 'context_compacting') add('compacting', event, index);
     if (event.type === 'llm_response' && purpose === 'context summary') add('summary', event, index);
     if (event.type === 'context_compaction') add('compacted', event, index);

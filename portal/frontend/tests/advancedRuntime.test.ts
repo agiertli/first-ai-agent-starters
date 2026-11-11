@@ -41,9 +41,10 @@ async function contextRun(compact: boolean, status = 400, message = 'maximum con
   const events: SSEEvent[] = [], requests: any[] = [];
   const fetcher: typeof fetch = async (url, options) => {
     const body = JSON.parse(String(options?.body));
-    if (String(url).endsWith('/tokenize')) return Response.json({ count: JSON.stringify(body.messages).length, max_model_len: 3000 });
+    if (String(url).endsWith('/tokenize')) return Response.json({ count: JSON.stringify(body.messages).length, max_model_len: 20000 });
     requests.push(body);
     if (requests.length === 1) return answer('Actual initial reply: 30 people.');
+    if (!compact && requests.length === 2) return answer('Long notes accepted.');
     if (!compact) return Response.json({ error: { message } }, { status });
     return answer(requests.length === 2 ? 'ACTUAL SUMMARY: budget 12000, 30 people.' : 'Recall: 30 people, budget 12000.');
   };
@@ -52,25 +53,36 @@ async function contextRun(compact: boolean, status = 400, message = 'maximum con
 }
 test('unmanaged sends the measured oversized request and displays the real provider rejection', async () => {
   const { events, requests } = await contextRun(false);
-  assert.equal(requests.length, 2);
-  assert.ok(JSON.stringify(requests[1].messages).length > 3000);
+  assert.equal(requests.length, 3);
+  assert.ok(JSON.stringify(requests[1].messages).length + 500 < 20000);
+  assert.ok(JSON.stringify(requests[2].messages).length > 20000);
   assert.ok(events.some(e => e.type === 'context_error' && e.error.includes('maximum context length exceeded')));
   assert.ok(!events.some(e => e.type === 'context_compacting' || e.type === 'context_compaction'));
   assert.equal(events.at(-1)?.type, 'done');
 });
-test('managed starts compaction at measured boundary, preserves actual reply and continues below it', async () => {
+test('managed starts compaction at proactive threshold, preserves actual reply and continues below it', async () => {
   const { events, requests } = await contextRun(true);
   assert.equal(requests.length, 3);
-  assert.ok(requests.every(r => JSON.stringify(r.messages).length + 500 <= 3000));
+  assert.ok(requests.every(r => JSON.stringify(r.messages).length + 500 <= 20000));
   assert.ok(JSON.stringify(requests[1]).includes('Actual initial reply'));
+  const notes = events.find(e => e.type === 'user_message' && e.content.startsWith('Synthetic notes'));
+  assert.ok(notes?.type === 'user_message');
+  assert.ok(notes.content.length > 15000);
+  assert.ok(requests[1].messages.some((m: any) => m.content === notes.content), 'Summarizer must receive the FULL notes, without deduplication');
+  const threshold = events.find(e => e.type === 'context_threshold');
+  assert.ok(threshold?.type === 'context_threshold' && threshold.threshold === 18000);
+  assert.ok(threshold.input_tokens >= threshold.threshold && threshold.input_tokens < threshold.limit);
   assert.ok(JSON.stringify(requests[2]).includes('ACTUAL SUMMARY'));
   assert.equal(requests[2].messages[1].content, input.prompt);
   const start = events.findIndex(e => e.type === 'context_compacting');
   const summary = events.findIndex(e => e.type === 'llm_request' && e.purpose === 'context summary');
   const finish = events.findIndex(e => e.type === 'context_compaction');
   assert.ok(start > 0 && summary > start && finish > summary);
+  const startEvent = events[start];
+  assert.ok(startEvent.type === 'context_compacting');
+  assert.equal(startEvent.input_tokens, JSON.stringify(requests[1].messages).length, 'Compaction shows the measured full summary request, including summary instructions');
   const compacted = events[finish];
-  assert.ok(compacted.type === 'context_compaction' && compacted.before_tokens! > 3000 && compacted.after_tokens! < 3000);
+  assert.ok(compacted.type === 'context_compaction' && compacted.before_tokens! >= 18000 && compacted.before_tokens! < 20000 && compacted.after_tokens! < 20000);
   assert.ok(!events.some(e => e.type === 'error' || e.type === 'context_error'));
 });
 test('rate limit is never presented as proven context overflow', async () => {

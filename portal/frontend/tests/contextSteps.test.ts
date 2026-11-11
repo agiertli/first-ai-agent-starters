@@ -17,16 +17,18 @@ test('later arrivals leave earlier step snapshots unchanged and do not expose th
   assert.ok(!events.slice(0,after[1].end).some(e=>e.type==='context_error'));
 });
 test('compaction has separate selectable intervention, summary and measured reduction steps',()=>{
-  const events: SSEEvent[]=[...initial,
-    {type:'context_compacting',input_tokens:263000,limit:262144},
-    {type:'notice',content:'deduplicate synthetic notes'},
+  const events: SSEEvent[]=[...initial.slice(0,-1),
+    {type:'context_measurement',input_tokens:235940,limit:262144,output_tokens:500,source:'server',phase:'threshold'},
+    {type:'context_threshold',input_tokens:235940,limit:262144,threshold:235929},
+    {type:'context_compacting',input_tokens:235940,limit:262144},
+    {type:'notice',content:'summarize the full history'},
     {type:'llm_request',messages:[],purpose:'context summary'},
     {type:'llm_response',content:'ACTUAL SUMMARY'},
-    {type:'context_compaction',before_count:4,after_count:4,before_tokens:263000,after_tokens:275,summary:'ACTUAL SUMMARY'},
+    {type:'context_compaction',before_count:4,after_count:4,before_tokens:235940,after_tokens:275,summary:'ACTUAL SUMMARY'},
     {type:'llm_request',messages:[],purpose:'recall after real context management'},
     {type:'llm_response',content:'Actual final answer'}, {type:'done'}];
   const steps=contextSteps(events);
-  assert.deepEqual(steps.map(s=>s.kind),['initial','boundary','compacting','summary','compacted','answer']);
+  assert.deepEqual(steps.map(s=>s.kind),['initial','threshold','compacting','summary','compacted','answer']);
   assert.equal(steps[2].event.type,'context_compacting');
   assert.ok(!events.slice(0,steps[2].end).some(e=>e.type==='context_compaction'));
   assert.equal(steps[3].event.type==='llm_response'&&steps[3].event.content,'ACTUAL SUMMARY');

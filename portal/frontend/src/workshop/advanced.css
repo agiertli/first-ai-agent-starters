@@ -9,3 +9,4 @@
 @media(max-width:850px){.context-walkthrough-top{flex-wrap:wrap}.context-walkthrough-top>span{flex-basis:45%}.context-step-stage{display:flex;flex-direction:column;height:auto}.context-step-diagram{height:300px;flex:none}.context-step-evidence{border-left:0;border-top:1px solid #dce3ed;max-height:460px;padding:18px}.context-step-controls{flex-wrap:wrap}.context-step-controls small{max-width:none;width:100%}.context-step-list button{font-size:13px}}
 
 .context-walkthrough .advanced-context-meter span{transition:none}
+.advanced-context-status.threshold{background:#fff2d6;border-color:#ad6b00}.advanced-context-status.threshold .advanced-context-meter span{background:#ad6b00}
