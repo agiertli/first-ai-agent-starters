@@ -104,6 +104,7 @@ export const DIAGRAM_SPECS: Record<number, DiagramSpec> = {
       llm_response: { nodes: ["llm"], arrows: ["res"] },
       context_overflow: { nodes: ["memory"] },
       context_error: { nodes: ["llm"], arrows: ["res"] },
+      context_compacting: { nodes: ["memory", "client"], arrows: ["load"] },
       context_compaction: { nodes: ["memory", "client"], arrows: ["load"] },
       separator: { nodes: ["client"] },
     },

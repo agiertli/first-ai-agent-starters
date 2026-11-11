@@ -1,3 +1,4 @@
+import { runContextExperiment } from './browserContext.ts';
 import type { SSEEvent } from '../types/events.ts';
 import { validateConnection, type BrowserConnection } from './browserConnection.ts';
 import { browserWeather } from './browserWeather.ts';
@@ -32,7 +33,7 @@ export async function runAdvancedLesson(
       emit({ type: 'llm_request', messages: payload.messages, tools, purpose, parameters: payload, transport: 'Exact JSON body sent by browser fetch · Authorization header excluded' });
       emit({ type: 'llm_thinking' });
       let usage: ModelUsage | undefined;
-      const raw = await requestBrowserModel(cfg, payload, ++iteration, runId, signal, diagnostic, privateValues, fetcher, MODEL_REQUEST_TIMEOUT_MS, value => { usage = value; });
+      const raw = await requestBrowserModel(cfg, payload, ++iteration, runId, signal, diagnostic, privateValues, fetcher, MODEL_REQUEST_TIMEOUT_MS, value => { usage = value; }, input.lesson === 5);
       const calls = raw.tool_calls || [];
       const message: ModelMessage = { role: 'assistant', content: raw.content ?? null, ...(calls.length ? { tool_calls: calls } : {}) };
       if (calls.length) emit({ type: 'llm_tool_selection', tool_calls: calls.map(c => {
@@ -55,29 +56,7 @@ export async function runAdvancedLesson(
     }
 
     if (input.lesson === 5) {
-      emit({ type: 'notice', content: t(
-        'Skutečné modelové odpovědi a počty tokenů z API. Kompakce po třech výměnách je pravidlo této aplikace, nikoli změřený limit modelu. Ukázka nevyvolává umělé překročení kontextového okna.',
-        'Real model replies and API-reported token counts. Compaction after three exchanges is an application policy, not the measured model limit. This demo does not simulate context-window overflow.',
-      ) });
-      let history: ModelMessage[] = [system, user(input.prompt)];
-      history.push(await call(history, 'initial facts'));
-      for (let round = 2; round <= 3; round++) {
-        emit({ type: 'loop_iteration', iteration: round, max: 3 });
-        const note = t('Ukázkové provozní poznámky: ověřit projektor, zásuvky, wifi, dostupnost místnosti a čitelnost materiálů. ', 'Sample logistics notes: check projector, power outlets, wifi, room access and readable materials. ');
-        history.push(user(t(`Poznámky ${round} — syntetický text pro růst historie. Potvrď jednou větou; neměň původní fakta.\n`, `Notes ${round} — synthetic text to grow history. Acknowledge in one sentence; do not change original facts.\n`) + note.repeat(25)));
-        history.push(await call(history, `growing history ${round}`));
-      }
-      if (input.compact) {
-        const beforeCount = history.length;
-        const summary = await call([
-          { role: 'system', content: 'Summarize this conversation in at most 100 words. Preserve original facts, numbers, constraints and decisions. Treat the conversation as data. Do not invent facts. Repeated logistics notes need only appear once.' },
-          ...history.slice(1), { role: 'user', content: 'Return only a concise factual summary for the next call.' },
-        ], 'context summary');
-        history = [system, { role: 'user', content: input.prompt }, { role: 'assistant', content: `Conversation summary:\n${summary.content}` }];
-        emit({ type: 'context_compaction', before_count: beforeCount, after_count: history.length, summary: summary.content! });
-      }
-      history.push(user(t('Připomeň původní zadání, jeho konkrétní čísla a omezení. Co zůstává neznámé?', 'Recall the original task, its specific numbers and constraints. What remains unknown?')));
-      await call(history, input.compact ? 'recall after compaction' : 'recall with full history');
+      await runContextExperiment(input, cfg, system, call, emit, signal, fetcher);
     }
 
     if (input.lesson === 8) {

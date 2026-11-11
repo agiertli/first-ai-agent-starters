@@ -77,6 +77,8 @@ function eventToEntry(evt: SSEEvent, idx: number, purpose?: string): LogEntry | 
       return { key: `e${idx}`, icon: "▰", label: "Server context check · tokens", content: `${evt.phase}\nEntire request: ${evt.input_tokens.toLocaleString()} input tokens (instructions + history + new message, with chat formatting).\nAnswer allowance: ${evt.output_tokens.toLocaleString()} tokens. Server context limit: ${evt.limit.toLocaleString()} tokens.\nMeasured by ${evt.source}. Character counts below describe individual text lengths, not context usage.`, color: "var(--node-agent)" };
     case "context_overflow":
       return { key: `e${idx}`, icon: "\u{274C}", label: "Teaching budget reached", content: `Approximately ${evt.estimated_tokens} tokens exceeds our ${evt.limit}-token application budget. The client will summarize before the next call.`, color: "#ef4444" };
+    case "context_compacting":
+      return { key: `e${idx}`, icon: "↻", label: "Compaction starts BEFORE inference", content: `${evt.input_tokens.toLocaleString()} input tokens exceed the server limit of ${evt.limit.toLocaleString()}. The application removes exact synthetic duplicates, then requests a live summary.`, color: "#b56908" };
     case "context_error":
       return { key: `e${idx}`, icon: "\u{1F4A5}", label: "LLM API ERROR", content: evt.error, color: "#ef4444" };
     case "context_compaction": {

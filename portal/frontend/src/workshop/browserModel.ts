@@ -28,7 +28,8 @@ export function safeException(error: unknown, privateValues: string[]): Error {
 }
 export class ModelRequestError extends Error {
   diagnostic: RequestDiagnostic;
-  constructor(diagnostic: RequestDiagnostic) { super(diagnostic.error?.message); this.name = 'ModelRequestError'; this.diagnostic = diagnostic; }
+  providerError?: string;
+  constructor(diagnostic: RequestDiagnostic, providerError?: string) { super(diagnostic.error?.message); this.providerError = providerError; this.name = 'ModelRequestError'; this.diagnostic = diagnostic; }
 }
 
 export function modelFailureMessage(d: RequestDiagnostic, cs: boolean): string {
@@ -51,7 +52,9 @@ export async function requestBrowserModel(
   signal: AbortSignal, emit: (diagnostic: RequestDiagnostic) => void, privateValues: string[],
   fetcher: typeof fetch = fetch, timeoutMs = MODEL_REQUEST_TIMEOUT_MS,
   onUsage?: (usage: ModelUsage | undefined) => void,
+  captureProviderError = false,
 ): Promise<ModelMessage> {
+  let providerError: string | undefined;
   const startedAt = Date.now();
   const timeout = AbortSignal.timeout(timeoutMs);
   const requestSignal = AbortSignal.any([signal, timeout]);
@@ -69,7 +72,12 @@ export async function requestBrowserModel(
     const providerRequestId = response.headers.get('x-request-id') || response.headers.get('request-id');
     update({ phase: 'headers', httpStatus: response.status, ...(providerRequestId ? { providerRequestId: redact(providerRequestId).slice(0, 150) } : {}) });
     console.info('[workshop:model] response headers', diagnostic);
-    if (!response.ok) { diagnostic = { ...diagnostic, kind: 'http' }; throw new Error(`Model API returned HTTP ${response.status}`); }
+    if (!response.ok) {
+      diagnostic = { ...diagnostic, kind: 'http' };
+      // Opt-in evidence for the context experiment, shown in its trace but never logged.
+      if (captureProviderError) providerError = redact(await response.text());
+      throw new Error(`Model API returned HTTP ${response.status}`);
+    }
     let data;
     try { data = await response.json(); } catch (error) {
       if (requestSignal.aborted) throw requestSignal.reason;
@@ -101,6 +109,6 @@ export async function requestBrowserModel(
     update({ phase: kind === 'cancelled' ? 'cancelled' : 'failed', kind, error: { name: safe.name, message: safe.message } });
     if (kind === 'cancelled') console.info('[workshop:model] cancelled', diagnostic);
     else console.error('[workshop:model] failed', safe, diagnostic);
-    throw new ModelRequestError(diagnostic);
+    throw new ModelRequestError(diagnostic, providerError);
   }
 }

@@ -37,24 +37,54 @@ test('memory resends the actual first reply and input; captured requests are imm
   assert.equal(captured[0].messages.length, 2);
   assert.deepEqual(captured[1].parameters, requests[1]);
 });
-test('context keeps full history unless compaction is selected', async () => {
-  const { events, requests } = await run(5, false, Array.from({ length: 4 }, (_, i) => answer(`Actual reply ${i}`)));
-  assert.equal(requests.length, 4); assert.equal(requests[3].messages.length, 8);
-  assert.ok(!events.some(e => e.type === 'context_compaction'));
-  assert.ok(!events.some(e => e.type === 'context_error' || e.type === 'context_overflow'));
+async function contextRun(compact: boolean, status = 400, message = 'maximum context length exceeded') {
+  const events: SSEEvent[] = [], requests: any[] = [];
+  const fetcher: typeof fetch = async (url, options) => {
+    const body = JSON.parse(String(options?.body));
+    if (String(url).endsWith('/tokenize')) return Response.json({ count: JSON.stringify(body.messages).length, max_model_len: 3000 });
+    requests.push(body);
+    if (requests.length === 1) return answer('Actual initial reply: 30 people.');
+    if (!compact) return Response.json({ error: { message } }, { status });
+    return answer(requests.length === 2 ? 'ACTUAL SUMMARY: budget 12000, 30 people.' : 'Recall: 30 people, budget 12000.');
+  };
+  await runAdvancedLesson({ ...input, lesson: 5, compact }, connection, e => events.push(e), () => {}, new AbortController().signal, fetcher);
+  return { events, requests };
+}
+test('unmanaged sends the measured oversized request and displays the real provider rejection', async () => {
+  const { events, requests } = await contextRun(false);
+  assert.equal(requests.length, 2);
+  assert.ok(JSON.stringify(requests[1].messages).length > 3000);
+  assert.ok(events.some(e => e.type === 'context_error' && e.error.includes('maximum context length exceeded')));
+  assert.ok(!events.some(e => e.type === 'context_compacting' || e.type === 'context_compaction'));
+  assert.equal(events.at(-1)?.type, 'done');
 });
-test('compaction uses live summary, retains brief, drops older turns and invents no counts', async () => {
-  const { events, requests } = await run(5, true, ['First', 'Second', 'Third', 'ACTUAL SUMMARY', 'Recall'].map(s => answer(s)));
-  assert.equal(requests.length, 5);
-  assert.ok(JSON.stringify(requests[3]).includes('First'));
-  assert.ok(JSON.stringify(requests[3]).includes('Third'));
-  assert.equal(requests[4].messages.length, 4);
-  assert.equal(requests[4].messages[1].content, input.prompt);
-  assert.match(requests[4].messages[2].content, /ACTUAL SUMMARY/);
-  assert.ok(!JSON.stringify(requests[4]).includes('Sample logistics notes'));
-  const compacted = events.find(e => e.type === 'context_compaction');
-  assert.equal(compacted?.type === 'context_compaction' && compacted.summary, 'ACTUAL SUMMARY');
-  assert.equal(compacted?.type === 'context_compaction' && compacted.before_tokens, undefined);
+test('managed starts compaction at measured boundary, preserves actual reply and continues below it', async () => {
+  const { events, requests } = await contextRun(true);
+  assert.equal(requests.length, 3);
+  assert.ok(requests.every(r => JSON.stringify(r.messages).length + 500 <= 3000));
+  assert.ok(JSON.stringify(requests[1]).includes('Actual initial reply'));
+  assert.ok(JSON.stringify(requests[2]).includes('ACTUAL SUMMARY'));
+  assert.equal(requests[2].messages[1].content, input.prompt);
+  const start = events.findIndex(e => e.type === 'context_compacting');
+  const summary = events.findIndex(e => e.type === 'llm_request' && e.purpose === 'context summary');
+  const finish = events.findIndex(e => e.type === 'context_compaction');
+  assert.ok(start > 0 && summary > start && finish > summary);
+  const compacted = events[finish];
+  assert.ok(compacted.type === 'context_compaction' && compacted.before_tokens! > 3000 && compacted.after_tokens! < 3000);
+  assert.ok(!events.some(e => e.type === 'error' || e.type === 'context_error'));
+});
+test('rate limit is never presented as proven context overflow', async () => {
+  const { events } = await contextRun(false, 429, 'rate limit reached');
+  assert.equal(events.at(-1)?.type, 'error');
+  assert.ok(!events.some(e => e.type === 'notice' && e.content.includes('Demonstrated:')));
+});
+test('unavailable tokenizer stops without inventing a limit or invoking the model', async () => {
+  const events: SSEEvent[] = [];
+  await runAdvancedLesson({ ...input, lesson: 5 }, connection, e => events.push(e), () => {}, new AbortController().signal, async url => {
+    assert.ok(String(url).endsWith('/tokenize')); return new Response('', {status:404});
+  });
+  assert.equal(events.at(-1)?.type, 'error');
+  assert.ok(!events.some(e => e.type === 'llm_request' || e.type === 'context_measurement'));
 });
 test('unknown tool or extra URL argument is rejected without network/tool execution', async () => {
   for (const [name, args] of [['send_email', '{}'], ['get_weather', '{"city":"Prague","url":"https://other.example"}'], ['get_weather', '{broken']]) {

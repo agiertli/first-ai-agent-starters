@@ -79,10 +79,23 @@ These adaptations reuse the original animated diagrams, request inspector and
 output renderer, with real TypeScript execution and source displayed on the page.
 Requests go directly to the configured model, and weather to Open-Meteo. The
 request inspector shows actual payloads and provider-reported usage when present.
-The context lesson compares full history with real model summarization after
-three exchanges. That is an explicit application policy, NOT a measured MaaS
-context-window limit or a simulated overflow. The original local Python lesson
-with server tokenizer and overflow experiments remains unchanged.
+The context lesson reads the actual token count and model limit from the configured
+server's `/tokenize` endpoint. After a real first exchange, exact repeated synthetic
+notes grow the next input beyond that measured limit. The unmanaged path submits
+this request and displays the actual provider error. The managed path intervenes
+before inference: it removes only exact synthetic duplicates, retains the original
+brief and actual reply, requests a live summary, measures the smaller context and
+continues with a recall question. The visible diagram status shows the boundary,
+compaction in progress and before/after counts. Playback holds these milestones
+for 3.5 seconds; pausing does not pause API execution.
+
+The experiment requires a vLLM-compatible `/tokenize` endpoint with CORS. It stops
+explicitly if that endpoint or its count/limit is unavailable; it never invents a
+window or provider error. An 8 MB input cap, bounded calibration, 60-second request
+limits and three-minute run limit bound the demo. Both paths use the same synthetic
+note workload; normal model replies can change the exact request size slightly.
+The context trace shows the redacted provider error body; other experiments retain
+the existing body-free diagnostics. The original local Python lesson is unchanged.
 
 **Facilitator** contains slide notes and the one-page Czech/English guide.
 Notes and connection settings are also visible on the projector.
