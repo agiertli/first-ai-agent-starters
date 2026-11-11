@@ -11,11 +11,11 @@ export function ContextStatus({ events, lang, compact }: { events: SSEEvent[]; l
   const phase = rejected ? 'error' : finished ? 'ready' : started ? 'compacting' : boundary ? 'boundary' : 'checking';
   const title = rejected ? t('API vrátilo chybu — viz skutečné znění vpravo', 'API returned an error — actual response on the right')
     : finished ? t('Kompakce dokončena → pokračujeme', 'Compaction complete → continue')
-    : started ? request?.purpose === 'context summary' ? t('Kompakce: model vytváří shrnutí', 'Compaction: model is creating a summary') : t('Nad limitem → aplikace spouští kompakci', 'Over the limit → application starts compaction')
+    : started ? request?.purpose === 'context summary' ? events.at(-1)?.type === 'llm_response' ? t('Model vrátil skutečné shrnutí', 'Model returned the actual summary') : t('Kompakce: model vytváří shrnutí', 'Compaction: model is creating a summary') : t('Nad limitem → aplikace spouští kompakci', 'Over the limit → application starts compaction')
     : boundary ? compact ? t('Další kontext by překročil limit', 'Next context would exceed the limit') : t('Nad limitem → ověříme odmítnutí API', 'Over the limit → test actual API rejection')
     : t('Server měří celý kontext', 'Server measures the entire context');
   const before = boundary?.type === 'context_measurement' ? boundary.input_tokens : undefined;
-  const count = finished?.type === 'context_compaction' ? finished.after_tokens : started || boundary ? before : check?.input_tokens;
+  const count = finished?.type === 'context_compaction' ? finished.after_tokens : started && request?.purpose === 'context summary' ? check?.input_tokens : started || boundary ? before : check?.input_tokens;
   const limit = check?.limit;
   return <div className={`advanced-context-status ${phase}`} aria-live="polite">
     <strong>{title}</strong>

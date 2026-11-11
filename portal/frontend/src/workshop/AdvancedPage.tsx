@@ -10,7 +10,7 @@ import { BrowserConnectionPanel } from './BrowserConnectionPanel';
 import { getBrowserConnection, subscribeConnection } from './browserConnection';
 import type { RequestDiagnostic } from './browserModel';
 import { advancedIds, runAdvancedLesson, type AdvancedId } from './advancedRuntime';
-import { ContextStatus } from './ContextStatus';
+import { ContextWalkthrough } from './ContextWalkthrough';
 import contextSource from './browserContext.ts?raw';
 import runtimeSource from './advancedRuntime.ts?raw';
 import modelSource from './browserModel.ts?raw';
@@ -47,6 +47,8 @@ function AdvancedLesson({ lesson, returnTo }: { lesson: AdvancedId; returnTo: st
   const [settings, setSettings] = useState(false);
   const [prompt, setPrompt] = useState(lesson === 3 || lesson === 4 ? t('Jmenuji se Anton. Zapamatuj si to prosím.', 'My name is Anton. Remember it please.') : lesson === 8 ? t('Jaké je počasí v Řevnicích právě teď?', 'What is the weather in Řevnice right now?') : t('Plánujeme tříhodinový workshop v Řevnicích pro 30 lidí. Rozpočet je 12 000 Kč, místnost stojí 4 000 Kč. Navrhni stručný program a zapamatuj si fakta.', 'We are planning a three-hour workshop in Řevnice for 30 people. The total budget is CZK 12,000; the room costs CZK 4,000. Suggest a brief programme and remember the facts.'));
   const [compact, setCompact] = useState(false);
+  const [runCompact, setRunCompact] = useState(false);
+  const [runNumber, setRunNumber] = useState(0);
   const [events, setEvents] = useState<SSEEvent[]>([]);
   const [visible, setVisible] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -62,12 +64,12 @@ function AdvancedLesson({ lesson, returnTo }: { lesson: AdvancedId; returnTo: st
   useEffect(() => { if (settings) dialog.current?.showModal(); else dialog.current?.close(); }, [settings]);
   useEffect(() => { document.documentElement.lang = lang; try { localStorage.setItem('first-agent-language', lang); } catch { /* optional */ } }, [lang]);
   useEffect(() => {
-    if (paused || visible >= events.length) return;
+    if (lesson === 5 || paused || visible >= events.length) return;
     const event = events[visible - 1];
     const milestone = event?.type === 'context_compacting' || event?.type === 'context_compaction' || event?.type === 'context_error' || (event?.type === 'context_measurement' && event.input_tokens > event.limit);
     const timer = window.setTimeout(() => setVisible(n => n + 1), milestone ? 3500 : 500);
     return () => clearTimeout(timer);
-  }, [paused, visible, events]);
+  }, [lesson, paused, visible, events]);
   useEffect(() => {
     if (!running || !diagnostic) return;
     const tick = () => setElapsed(Math.floor((Date.now() - diagnostic.startedAt) / 1000));
@@ -77,7 +79,8 @@ function AdvancedLesson({ lesson, returnTo }: { lesson: AdvancedId; returnTo: st
     if (!connection) { setSettings(true); return; }
     controller.current?.abort(); const current = ++generation.current;
     const abort = new AbortController(); controller.current = abort;
-    setEvents([]); setVisible(0); setPaused(false); setRunning(true); setDiagnostic(null); setElapsed(0);
+    if (lesson === 5) requestAnimationFrame(() => { const stage = document.getElementById('context-walkthrough'); stage?.scrollIntoView({ block: 'start' }); stage?.focus({ preventScroll: true }); });
+    setRunNumber(n => n + 1); setRunCompact(compact); setEvents([]); setVisible(0); setPaused(false); setRunning(true); setDiagnostic(null); setElapsed(0);
     try {
       await runAdvancedLesson({ lesson, prompt, compact, language: lang }, connection,
         event => { if (generation.current === current) setEvents(previous => [...previous, event]); },
@@ -107,8 +110,11 @@ function AdvancedLesson({ lesson, returnTo }: { lesson: AdvancedId; returnTo: st
       <p className="advanced-connection">{connection ? t('Stejné uložené připojení jako ve workshopu. Volání jde z prohlížeče přímo do vašeho API.', 'Uses the same saved connection as the workshop. Requests go directly from this browser to your API.') : t('Uložte připojení modelu jednou; workshop a tyto lekce ho sdílejí.', 'Save a model connection once; the workshop and these lessons share it.')} {t('Každý pokus začíná bez historie.', 'Every attempt starts with no history.')}</p>
       <div className="advanced-progress" role="status">{running ? `${t('Živý běh', 'Live run')} · ${diagnostic?.phase === 'headers' ? `HTTP ${diagnostic.httpStatus}` : t('čekání na API', 'waiting for API')} · ${elapsed} s` : error ? t('Pokus selhal — podrobnosti níže a v konzoli', 'Attempt failed — details below and in Console') : events.length ? t('Běh skončil; přehrávání už API nevolá.', 'Run ended; playback makes no API calls.') : t('Připraveno — žádné předpřipravené odpovědi.', 'Ready — no prerecorded answers.')}</div>
       {error?.type === 'error' && <p role="alert" className="advanced-error">{error.content}</p>}
-      <section className={`advanced-stage ${lesson === 5 ? 'advanced-context-stage' : ''}`}><div className="advanced-visual"><div className="advanced-diagram">{lesson === 3 ? <DualDiagram events={shown} currentEventIndex={visible}/> : <LessonDiagram spec={DIAGRAM_SPECS[lesson]} events={shown} currentEventIndex={visible}/>}</div>{lesson === 5 ? <ContextStatus events={shown} lang={lang} compact={compact}/> : <p className="advanced-caption">{status}</p>}</div><div className="advanced-output"><h2>{t('Skutečný výstup a události', 'Actual output and events')}</h2><OutputPanel events={shown} isRunning={running} showHeader={false}/></div></section>
+      {lesson === 5 ? <ContextWalkthrough key={runNumber} events={events} lang={lang} compact={runCompact} running={running} elapsed={elapsed} onConfigure={() => document.getElementById('advanced-prompt')?.focus()}/> : <>
+      <section className="advanced-stage"><div className="advanced-visual"><div className="advanced-diagram">{lesson === 3 ? <DualDiagram events={shown} currentEventIndex={visible}/> : <LessonDiagram spec={DIAGRAM_SPECS[lesson]} events={shown} currentEventIndex={visible}/>}</div><p className="advanced-caption">{status}</p></div><div className="advanced-output"><h2>{t('Skutečný výstup a události', 'Actual output and events')}</h2><OutputPanel events={shown} isRunning={running} showHeader={false}/></div></section>
       <div className="advanced-playback"><button disabled={visible === 0} onClick={() => { setPaused(true); setVisible(n => Math.max(0, n - 1)); }}>←</button><span>{visible} / {events.length}</span><button disabled={visible >= events.length} onClick={() => { setPaused(true); setVisible(n => Math.min(events.length, n + 1)); }}>→</button><button disabled={!events.length} onClick={() => setPaused(v => !v)}>{paused ? t('Přehrávat', 'Play') : t('Pozastavit přehrávání', 'Pause playback')}</button><button disabled={running || !events.length} onClick={() => { setVisible(0); setPaused(false); }}>{t('Přehrát záznam', 'Replay trace')}</button><small>{t('Krokování řídí zobrazení, nikoli běh modelu.', 'Stepping controls the display, not model execution.')}</small></div>
+      </>}
+      {lesson === 5 && <details className="advanced-inspector"><summary>{t('Úplný technický záznam', 'Full technical trace')}</summary><OutputPanel events={events} isRunning={running}/></details>}
       <details className="advanced-inspector"><summary>{t('Požadavky, historie a skutečné počty tokenů', 'Requests, history and actual token counts')}</summary><RequestHistory events={events}/></details>
       <details className="advanced-source"><summary>{t('Skutečný zdrojový kód · TypeScript', 'Actual source code · TypeScript')}</summary><label>{t('Zobrazený soubor', 'Source file')} <select value={source} onChange={e => setSource(e.target.value)}><option value="lesson">advancedRuntime.ts</option><option value="context">browserContext.ts</option><option value="model">browserModel.ts</option><option value="weather">browserWeather.ts</option></select></label><pre>{source === 'context' ? contextSource : source === 'model' ? modelSource : source === 'weather' ? weatherSource : runtimeSource}</pre></details>
       {lesson === 8 && <p className="advanced-connection">Open-Meteo · CC BY 4.0 · {t('modelový odhad počasí, mezipaměť nejvýše 5 minut; zdroj a čas ve výsledku nástroje.', 'modelled weather, cached up to 5 minutes; source and timestamps in the tool result.')} <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo</a></p>}

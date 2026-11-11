@@ -85,9 +85,13 @@ notes grow the next input beyond that measured limit. The unmanaged path submits
 this request and displays the actual provider error. The managed path intervenes
 before inference: it removes only exact synthetic duplicates, retains the original
 brief and actual reply, requests a live summary, measures the smaller context and
-continues with a recall question. The visible diagram status shows the boundary,
-compaction in progress and before/after counts. Playback holds these milestones
-for 3.5 seconds; pausing does not pause API execution.
+continues with a recall question. The context walkthrough defaults to manual navigation. Click a named milestone,
+Previous/Next, or use Left/Right while the walkthrough has focus. Each step shows
+one diagram snapshot and the matching explanation, measured counts or actual
+response. Error and compaction have their own selectable steps. Results arriving
+in the background never advance the selected step or alter its snapshot. Starting
+a new attempt resets the walkthrough and brings it into view. The complete raw
+trace is collapsed below. Navigation never invokes the API or pauses execution.
 
 The experiment requires a vLLM-compatible `/tokenize` endpoint with CORS. It stops
 explicitly if that endpoint or its count/limit is unavailable; it never invents a
