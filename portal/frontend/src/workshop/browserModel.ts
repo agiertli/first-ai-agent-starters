@@ -1,6 +1,7 @@
 import type { BrowserConnection } from './browserConnection.ts';
 
 export const MODEL_REQUEST_TIMEOUT_MS = 60_000;
+export interface ModelUsage { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number; [key: string]: unknown }
 export interface ModelToolCall { id: string; type: 'function'; function: { name: string; arguments: string } }
 export interface ModelMessage { role: 'system' | 'user' | 'assistant' | 'tool'; content: string | null; tool_calls?: ModelToolCall[]; tool_call_id?: string }
 export interface RequestDiagnostic {
@@ -49,6 +50,7 @@ export async function requestBrowserModel(
   cfg: BrowserConnection, payload: Record<string, unknown>, iteration: number, runId: string,
   signal: AbortSignal, emit: (diagnostic: RequestDiagnostic) => void, privateValues: string[],
   fetcher: typeof fetch = fetch, timeoutMs = MODEL_REQUEST_TIMEOUT_MS,
+  onUsage?: (usage: ModelUsage | undefined) => void,
 ): Promise<ModelMessage> {
   const startedAt = Date.now();
   const timeout = AbortSignal.timeout(timeoutMs);
@@ -82,6 +84,12 @@ export async function requestBrowserModel(
     if (calls.some(c => !c || c.type !== 'function' || typeof c.id !== 'string' || !c.id || typeof c.function?.name !== 'string' || typeof c.function?.arguments !== 'string')) throw new Error('Invalid tool call in model response');
     if (!payload.tools && calls.length) throw new Error('Unexpected tool calls in a request without tools');
     if (!calls.length && !raw.content?.trim()) throw new Error('Model returned an empty answer');
+    const usage: ModelUsage = {};
+    for (const key of ['prompt_tokens', 'completion_tokens', 'total_tokens'] as const) {
+      const count = data.usage?.[key];
+      if (typeof count === 'number' && Number.isFinite(count) && count >= 0) usage[key] = count;
+    }
+    onUsage?.(Object.keys(usage).length ? usage : undefined);
     update({ phase: 'complete' });
     console.info('[workshop:model] complete', diagnostic);
     return raw;

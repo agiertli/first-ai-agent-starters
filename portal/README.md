@@ -68,6 +68,22 @@ own apps. The brief starts with the problem, reason, people and context. AI help
 agree outputs, tools and success checks only after a solution is chosen. Timers
 continue while switching to Exercises, but reset when leaving their slide.
 
+**Facilitator → Advanced lessons · optional** links to four separate browser
+lessons: 3 (no memory), 4 (client-side history), 5 (context management), and 8
+(tool calling). They live at `#/advanced/3`, `/4`, `/5`, and `/8` on the same
+GitHub Pages site, reuse the workshop's saved model connection, and require no
+local server. They open separately; Back to workshop restores the originating
+slide and step. Nothing is added to the main slide sequence or participant exercises.
+
+These adaptations reuse the original animated diagrams, request inspector and
+output renderer, with real TypeScript execution and source displayed on the page.
+Requests go directly to the configured model, and weather to Open-Meteo. The
+request inspector shows actual payloads and provider-reported usage when present.
+The context lesson compares full history with real model summarization after
+three exchanges. That is an explicit application policy, NOT a measured MaaS
+context-window limit or a simulated overflow. The original local Python lesson
+with server tokenizer and overflow experiments remains unchanged.
+
 **Facilitator** contains slide notes and the one-page Czech/English guide.
 Notes and connection settings are also visible on the projector.
 The public PDFs must be regenerated when `workshop-content/runbook.json` changes.
